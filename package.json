@@ -3,6 +3,17 @@
   "version": "1.0.0",
   "description": "The REST Apis of Preben Norwegian Community software",
   "scripts": {
+    "transpile:source": "tsc -p source",
+    "transpile:scripts": "tsc -p scripts",
+    "transpile": "npm run transpile:source && npm run transpile:scripts",
+    "start": "node dist/server/main",
+    "serve": "npm run transpile:source && npm start",
+    "lint:scripts": "eslint scripts --ext ts --format codeframe",
+    "lint:scripts:fix": "eslint scripts --ext ts --format codeframe --fix",
+    "lint:source": "eslint source --ext ts --format codeframe",
+    "lint:source:fix": "eslint source --ext ts --format codeframe --fix",
+    "lint": "npm run lint:source && npm run lint:scripts",
+    "lint:fix": "npm run lint:source:fix && npm run lint:scripts:fix"
   },
   "repository": {
     "type": "git",
