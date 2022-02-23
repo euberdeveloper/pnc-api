@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 import * as dotenv from 'dotenv';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -30,7 +31,7 @@ const CONFIG = {
     },
     MONGODB: {
         URI: process.env.MONGODB_URI,
-        DB: process.env.MONGODB_DB,
+        DB: process.env.MONGODB_DB
     },
     SECURITY: {
         SALT_ROUNDS: +process.env.SECURITY_SALT_ROUNDS,

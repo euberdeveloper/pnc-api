@@ -25,6 +25,8 @@
   },
   "homepage": "https://github.com/Preben-Norwegian-Community/pnc-api#readme",
   "devDependencies": {
+    "@euberdeveloper/eslint-plugin": "^1.2.1",
+    "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
     "@types/express-session": "^1.17.4",
@@ -41,6 +43,7 @@
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-config-typescript": "^3.0.0",
+    "eslint-formatter-codeframe": "^7.32.1",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-unicorn": "^41.0.0",
     "prettier": "^2.5.1",
