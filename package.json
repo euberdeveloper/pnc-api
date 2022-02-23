@@ -26,6 +26,7 @@
   "homepage": "https://github.com/Preben-Norwegian-Community/pnc-api#readme",
   "devDependencies": {
     "@euberdeveloper/eslint-plugin": "^1.2.1",
+    "@types/connect-redis": "^0.0.18",
     "@types/cookie-parser": "^1.4.2",
     "@types/cors": "^2.8.12",
     "@types/express": "^4.17.13",
@@ -51,6 +52,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
+    "connect-redis": "^6.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "dotenv": "^16.0.0",
@@ -65,6 +67,7 @@
     "passport": "^0.5.2",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
+    "redis": "^4.0.4",
     "uuid": "^8.3.2"
   }
 }

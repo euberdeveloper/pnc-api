@@ -33,6 +33,10 @@ const CONFIG = {
         URI: process.env.MONGODB_URI,
         DB: process.env.MONGODB_DB
     },
+    REDIS: {
+        HOST: process.env.REDIS_HOST,
+        PORT: process.env.REDIS_PORT
+    },
     SECURITY: {
         SALT_ROUNDS: +process.env.SECURITY_SALT_ROUNDS,
         SESSION: {
