@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "strict": true,
+        "target": "ES5",
+        "lib": [
+            "ES2021"
+        ],
+        "sourceMap": true,
+        "baseUrl": ".",
+        "resolveJsonModule": true,
+        "downlevelIteration": true,
+        "paths": {
+            "@/*": [
+                "./*"
+            ]
+        },
+        "outDir": "../dist/server"
+    }
+}
