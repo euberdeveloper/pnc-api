@@ -8,7 +8,3 @@ export * from './InvalidPathParamError';
 export * from './InvalidQueryParamError';
 export * from './InvalidBodyError';
 export * from './InvalidTokenError';
-export * from './ForeignKeyError';
-export * from './UniqueConstraintError';
-export * from './UniqueRootError';
-export * from './InvalidActionError';
