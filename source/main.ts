@@ -5,7 +5,7 @@ import logger from 'euberlog';
 // import { Loader } from '@/loaders';
 // import router from '@/api';
 // import devMiddleware from '@/utils/developmentMiddleware';
-// import CONFIG from '@/config';
+import CONFIG from '@/config';
 
 async function startServer(): Promise<void> {
     logger.hr();
@@ -25,8 +25,7 @@ async function startServer(): Promise<void> {
     // await loader.testDatabaseConnection();
 
     logger.info('Starting server...');
-    // const port = CONFIG.SERVER.PORT;
-    const port = 3000;
+    const port = CONFIG.SERVER.PORT;
     app.listen(port, () => {
         logger.success(`Server listening on port ${port}`);
         logger.hr();
