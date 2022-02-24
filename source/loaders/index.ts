@@ -11,6 +11,7 @@ import loadSession from './session';
 import loadPassport from './passport';
 
 import getErrorHandler from './errorHandler';
+import databaseConnection from './databaseConnection';
 
 export class Loader {
     private readonly app: Express;
@@ -54,6 +55,16 @@ export class Loader {
         this.app.use(getErrorHandler());
 
         logger.success('Error handler loaded');
+        logger.hr();
+    }
+
+    public async startDatabaseConnection(): Promise<void> {
+        logger.hr();
+        logger.info('Starting database connection');
+
+        await databaseConnection();
+
+        logger.success('Started database connection');
         logger.hr();
     }
 }

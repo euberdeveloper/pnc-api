@@ -5,10 +5,10 @@
         "lib": [
             "ES2021"
         ],
+        "downlevelIteration": true,
+        "skipLibCheck": true,
         "sourceMap": true,
         "baseUrl": ".",
-        "resolveJsonModule": true,
-        "downlevelIteration": true,
         "paths": {
             "@/*": [
                 "./*"

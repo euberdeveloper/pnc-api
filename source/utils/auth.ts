@@ -4,9 +4,9 @@ import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
 import logger from 'euberlog';
 
-import authService from '@/services/auth.service';
-import CONFIG from '@/config';
+import { authService } from '@/services/auth.service';
 import { InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
+import CONFIG from '@/config';
 
 export const authenticateJwt: Handler = function authenticate(req, res, next) {
     if (req.isAuthenticated()) {

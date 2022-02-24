@@ -2,8 +2,8 @@ import './utils/moduleAlias';
 
 import * as express from 'express';
 import logger from 'euberlog';
-// import { Loader } from '@/loaders';
-// import router from '@/api';
+import { Loader } from '@/loaders';
+import router from '@/api';
 // import devMiddleware from '@/utils/developmentMiddleware';
 import CONFIG from '@/config';
 
@@ -16,13 +16,11 @@ async function startServer(): Promise<void> {
     // Only on development environment
     // devMiddleware(app);
 
-    // const loader = new Loader(app, router);
-    // loader.loadMiddlewares();
-    // loader.loadRouter();
-    // loader.loadErrorHandler();
-    // loader.loadSubscribers();
-    // await loader.loadJobs();
-    // await loader.testDatabaseConnection();
+    const loader = new Loader(app, router);
+    loader.loadMiddlewares();
+    loader.loadRouter();
+    loader.loadErrorHandler();
+    await loader.startDatabaseConnection();
 
     logger.info('Starting server...');
     const port = CONFIG.SERVER.PORT;
