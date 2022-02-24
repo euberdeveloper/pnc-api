@@ -4,7 +4,7 @@ import * as express from 'express';
 import logger from 'euberlog';
 import { Loader } from '@/loaders';
 import router from '@/api';
-// import devMiddleware from '@/utils/developmentMiddleware';
+import devMiddleware from '@/utils/developmentMiddleware';
 import CONFIG from '@/config';
 
 async function startServer(): Promise<void> {
@@ -14,7 +14,7 @@ async function startServer(): Promise<void> {
     const app = express();
 
     // Only on development environment
-    // devMiddleware(app);
+    devMiddleware(app);
 
     const loader = new Loader(app, router);
     loader.loadMiddlewares();
