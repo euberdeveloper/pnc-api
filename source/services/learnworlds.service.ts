@@ -1,10 +1,18 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 import axios from 'axios';
+import logger from 'euberlog';
 
+import { Course } from '@/types';
 import CONFIG from '@/config';
 
 interface LearnWorldsServiceOptions {
     learnworlds: typeof CONFIG.LEARNWORLDS;
+}
+
+interface LearnWorldsApiResponse {
+    [key: string]: any;
+    errors: any[];
+    success: boolean;
 }
 
 export interface LearnWorldsToken {
@@ -20,21 +28,39 @@ export class LearnWorldsService {
         this.host = this.options.learnworlds.API_ENDPOINT;
     }
 
+    private async getHeaders() {
+        const token = await this.getToken();
+        return {
+            'Lw-Client': this.options.learnworlds.CLIENT_ID,
+            'Authorization': `Bearer ${token.access_token}`
+        };
+    }
+
     private async getToken(): Promise<LearnWorldsToken> {
-        return axios
-            .post(
-                `${this.host}/oauth2/access_token`,
-                {
-                    client_id: this.options.learnworlds.CLIENT_ID,
-                    client_secret: this.options.learnworlds.CLIENT_SECRET,
-                    grant_type: this.options.learnworlds.GRANT_TYPE
-                },
-                { headers: { 'Lw-Client': this.options.learnworlds.CLIENT_ID } }
-            )
-            .then(response => response.data);
+        const response = await axios.post<LearnWorldsApiResponse>(
+            `${this.host}/oauth2/access_token`,
+            {
+                client_id: this.options.learnworlds.CLIENT_ID,
+                client_secret: this.options.learnworlds.CLIENT_SECRET,
+                grant_type: this.options.learnworlds.GRANT_TYPE
+            },
+            { headers: { 'Lw-Client': this.options.learnworlds.CLIENT_ID } }
+        );
+
+        if (!response.data.success) {
+            logger.warning('Failed to get LearnWorlds token', response.data.errors);
+            throw new Error(response.data.errors[0]?.message ?? 'Failed to get LearnWorlds token');
+        }
+
+        return response.data.tokenData;
+    }
+
+    public async getCourses(): Promise<Course[]> {
+        const response = await axios.get(`${this.host}/v2/courses`, { headers: await this.getHeaders() });
+        return response.data.data;
     }
 }
 
-export const userService = new LearnWorldsService({
+export const learnWorldsService = new LearnWorldsService({
     learnworlds: CONFIG.LEARNWORLDS
 });
