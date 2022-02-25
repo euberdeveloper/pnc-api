@@ -42,7 +42,7 @@ export class UsersController extends BaseController {
 
     public async getByUsername(req: Request, res: Response): Promise<void> {
         const { username } = this.validatePathParams<UsernamePathParams>(req, this.usernamePathParamsValidator);
-        const user = await this.users.getById(username);
+        const user = await this.users.getByUsername(username);
         res.json(user);
     }
 
