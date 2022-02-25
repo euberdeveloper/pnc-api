@@ -40,7 +40,7 @@ export class UserService {
 
     public async create(body: Omit<User, 'id' | 'creationDate'>): Promise<string> {
         // TODO: fix this.auth is undefined
-        body.password = await authService.hashPassword('password');
+        body.password = await authService.hashPassword(body.password);
         const user = new this.db.userModel(body);
         await user.save();
         return user.id;

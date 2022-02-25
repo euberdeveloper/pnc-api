@@ -12,7 +12,7 @@ interface AuthServiceOptions {
     saltRounds: typeof CONFIG.SECURITY.SALT_ROUNDS;
 }
 
-interface AuthResponse {
+export interface AuthResponse {
     token: string;
     user: Omit<User, 'password'>;
 }

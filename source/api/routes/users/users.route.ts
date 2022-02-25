@@ -16,10 +16,7 @@ export default function (): Router {
         asyncHandler(usersController.getAll.bind(usersController))
     );
 
-    router.get('/me', authenticateJwt, (req, res) => {
-        const user = req.user;
-        res.json(user);
-    });
+    router.get('/me', authenticateJwt, usersController.getMe.bind(usersController));
 
     router.get(
         '/:id',

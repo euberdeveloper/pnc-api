@@ -26,6 +26,11 @@ export class UsersController extends BaseController {
         super();
     }
 
+    public getMe(req: Request, res: Response): void {
+        const user = this.requireUser(req);
+        res.json(user);
+    }
+
     public async getAll(_req: Request, res: Response): Promise<void> {
         const users = await this.users.getAll();
         res.json(users);
