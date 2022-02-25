@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import Joi = require('joi');
 
 import { userService } from '@/services';
+import { User } from '@/types';
 
 import { BaseController } from './base';
 
@@ -12,7 +13,13 @@ interface UsernamePathParams {
 
 export class UsersController extends BaseController {
     private readonly usernamePathParamsValidator = Joi.object({
-        username: Joi.string().min(1)
+        username: this.usernameValidatorObject
+    });
+    private readonly bodyValidator = Joi.object({
+        username: this.usernameValidatorObject,
+        password: this.passwordValidatorObject,
+        role: this.roleValidatorObject,
+        email: this.emailValidatorObject
     });
 
     constructor(private readonly users = userService) {
@@ -34,6 +41,12 @@ export class UsersController extends BaseController {
         const { username } = this.validatePathParams<UsernamePathParams>(req, this.usernamePathParamsValidator);
         const user = await this.users.getById(username);
         res.json(user);
+    }
+
+    public async create(req: Request, res: Response): Promise<void> {
+        const body = this.validatePostBody<User>(req, this.bodyValidator);
+        const id = await this.users.create(body);
+        res.json(id);
     }
 
     public async deleteByUsername(req: Request, res: Response): Promise<void> {

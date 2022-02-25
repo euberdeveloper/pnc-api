@@ -9,6 +9,7 @@ import CONFIG from '@/config';
 
 interface AuthServiceOptions {
     jwtOptions: typeof CONFIG.SECURITY.JWT;
+    saltRounds: typeof CONFIG.SECURITY.SALT_ROUNDS;
 }
 
 interface AuthResponse {
@@ -70,6 +71,10 @@ export class AuthService {
         return response;
     }
 
+    public async hashPassword(password: string): Promise<string> {
+        return await bcrypt.hash(password, this.options.saltRounds);
+    }
+
     public serializeUser(user: User): string {
         return user.id;
     }
@@ -89,5 +94,6 @@ export class AuthService {
 }
 
 export const authService = new AuthService({
-    jwtOptions: CONFIG.SECURITY.JWT
+    jwtOptions: CONFIG.SECURITY.JWT,
+    saltRounds: CONFIG.SECURITY.SALT_ROUNDS
 });

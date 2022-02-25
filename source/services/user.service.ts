@@ -38,6 +38,14 @@ export class UserService {
         return user;
     }
 
+    public async create(body: Omit<User, 'id' | 'creationDate'>): Promise<string> {
+        // TODO: fix this.auth is undefined
+        body.password = await authService.hashPassword('password');
+        const user = new this.db.userModel(body);
+        await user.save();
+        return user.id;
+    }
+
     public async deleteById(authorizingUser: User, id: string): Promise<void> {
         if (authorizingUser.role !== UserRole.ADMIN || authorizingUser.id !== id) {
             throw new UserNotAuthorizedError('A non-admin user is authorized just to delete himself');

@@ -21,24 +21,26 @@ export default function (): Router {
         res.json(user);
     });
 
-    router.get('/:id', authenticateJwt, asyncHandler(usersController.get.bind(usersController)));
+    router.get(
+        '/:id',
+        authenticateJwt,
+        permission([UserRole.ADMIN]),
+        asyncHandler(usersController.get.bind(usersController))
+    );
 
     router.get(
         '/username/:username',
         authenticateJwt,
+        permission([UserRole.ADMIN]),
         asyncHandler(usersController.getByUsername.bind(usersController))
     );
 
-    // router.post(
-    //     '/',
-    //     authenticateJwt,
-    //     permission([UserRole.ROOT, UserRole.ADMIN]),
-    //     asyncHandler(async (req, res) => {
-    //         const body = req.body;
-    //         const uid = await utenteService.postUtente(body);
-    //         res.json(uid);
-    //     })
-    // );
+    router.post(
+        '/',
+        authenticateJwt,
+        permission([UserRole.ADMIN]),
+        asyncHandler(usersController.create.bind(usersController))
+    );
 
     // router.patch(
     //     '/:uid',

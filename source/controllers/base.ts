@@ -2,16 +2,28 @@ import { Request } from 'express';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import Joi = require('joi');
 
-import { InvalidPathParamError, UserNotAuthenticatedError } from '@/errors';
-import { User } from '@/types';
+import { InvalidBodyError, InvalidPathParamError, UserNotAuthenticatedError } from '@/errors';
+import { User, UserRole } from '@/types';
 
 export interface IdPathParams {
     id: string;
 }
 
 export class BaseController {
+    protected idValidatorObject = Joi.string()
+        .min(1)
+        .regex(/^[\w.]+$/);
+    protected usernameValidatorObject = Joi.string()
+        .min(1)
+        .regex(/^[\w.]+$/);
+    protected passwordValidatorObject = Joi.string().regex(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!$%&*?@])[\d!$%&*?@A-Za-z]{8,32}$/
+    );
+    protected emailValidatorObject = Joi.string().email();
+    protected roleValidatorObject = Joi.string().valid(...Object.values(UserRole));
+
     protected idPathParamsValidator = Joi.object({
-        id: Joi.string().min(1)
+        id: this.idValidatorObject
     });
 
     private extractPathParam(req: Request, param: string): string | undefined {
@@ -48,6 +60,16 @@ export class BaseController {
 
     protected validateIdPathParams(req: Request): IdPathParams {
         return this.validatePathParams<IdPathParams>(req, this.idPathParamsValidator);
+    }
+
+    protected validatePostBody<T = any>(req: Request, paramsSchema: Joi.ObjectSchema<T>): T {
+        const { error, value } = paramsSchema.validate(req.body, { presence: 'required' });
+
+        if (error) {
+            throw new InvalidBodyError(error.message);
+        }
+
+        return value as T;
     }
 
     protected requireUser(req: Request): User {
