@@ -23,15 +23,11 @@ export default function (): Router {
 
     router.get('/:id', authenticateJwt, asyncHandler(usersController.get.bind(usersController)));
 
-    // router.get(
-    //     '/username/:username',
-    //     authenticateJwt,
-    //     asyncHandler(async (req, res) => {
-    //         const username = req.params.username;
-    //         const utente = await utenteService.getUtenteByNomeUtente(username);
-    //         res.json(utente);
-    //     })
-    // );
+    router.get(
+        '/username/:username',
+        authenticateJwt,
+        asyncHandler(usersController.getByUsername.bind(usersController))
+    );
 
     // router.post(
     //     '/',

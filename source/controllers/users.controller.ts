@@ -3,7 +3,6 @@ import { Request, Response } from 'express';
 import Joi = require('joi');
 
 import { userService } from '@/services';
-import { User } from '@/types';
 
 import { BaseController } from './base';
 
