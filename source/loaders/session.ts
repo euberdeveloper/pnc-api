@@ -2,7 +2,7 @@ import { Express } from 'express';
 import logger from 'euberlog';
 import initializeSession from '@/utils/session';
 
-export default function loadSession(app: Express): void {
+export default async function loadSession(app: Express): Promise<void> {
     logger.debug('Load session');
-    app.use(initializeSession());
+    app.use(await initializeSession());
 }

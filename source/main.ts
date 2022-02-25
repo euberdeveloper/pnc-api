@@ -17,7 +17,7 @@ async function startServer(): Promise<void> {
     devMiddleware(app);
 
     const loader = new Loader(app, router);
-    loader.loadMiddlewares();
+    await loader.loadMiddlewares();
     loader.loadRouter();
     loader.loadErrorHandler();
     await loader.startDatabaseConnection();

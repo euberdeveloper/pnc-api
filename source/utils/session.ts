@@ -5,11 +5,13 @@ import * as connectRedis from 'connect-redis';
 
 import CONFIG from '@/config';
 
-export default function (): Handler {
+export default async function (): Promise<Handler> {
     const redisStore = connectRedis(session);
     const redisClient = redis.createClient({
-        url: `redis://${CONFIG.REDIS.HOST}:${CONFIG.REDIS.PORT}`
+        url: `redis://${CONFIG.REDIS.HOST}:${CONFIG.REDIS.PORT}`,
+        legacyMode: true
     });
+    await redisClient.connect();
 
     return session({
         store: new redisStore({ client: redisClient }),

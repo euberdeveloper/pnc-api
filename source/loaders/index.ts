@@ -22,7 +22,7 @@ export class Loader {
         this.router = router;
     }
 
-    public loadMiddlewares(): void {
+    public async loadMiddlewares(): Promise<void> {
         logger.hr();
         logger.info('Loading middlewares');
 
@@ -31,7 +31,7 @@ export class Loader {
         loadHelmet(this.app);
         loadBodyParser(this.app);
         loadCookieParser(this.app);
-        loadSession(this.app);
+        await loadSession(this.app);
         loadPassport(this.app);
 
         logger.success('Middlewares loaded');
