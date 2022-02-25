@@ -53,6 +53,11 @@ const CONFIG = {
             ISSUER: process.env.SECURITY_JWT_ISSUER
         }
     },
+    LEARNWORLDS: {
+        CLIENT_ID: process.env.LEARNWORLDS_CLIENT_ID,
+        CLIENT_SECRET: process.env.LEARNWORLDS_CLIENT_SECRET,
+        GRANT_TYPE: process.env.LEARNWORLDS_GRANT_TYPE
+    },
     CORS: {
         ORIGIN: process.env.CORS_ORIGIN,
         CREDENTIALS: process.env.CORS_CREDENTIALS === 'true'
