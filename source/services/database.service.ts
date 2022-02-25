@@ -15,6 +15,10 @@ export class DatabaseService {
     public async connect(): Promise<void> {
         this.connection = await mongoose.connect(this.options.databaseUri);
     }
+
+    public async disconnect(): Promise<void> {
+        await mongoose.disconnect();
+    }
 }
 
 export const databaseService = new DatabaseService({

@@ -15,7 +15,8 @@
     "lint:source": "eslint source --ext ts --format codeframe",
     "lint:source:fix": "eslint source --ext ts --format codeframe --fix",
     "lint": "npm run lint:source && npm run lint:scripts",
-    "lint:fix": "npm run lint:source:fix && npm run lint:scripts:fix"
+    "lint:fix": "npm run lint:source:fix && npm run lint:scripts:fix",
+    "scripts:add-admin": "node dist/scripts/scripts/addAdmin"
   },
   "repository": {
     "type": "git",
