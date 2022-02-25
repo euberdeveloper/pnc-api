@@ -10,9 +10,13 @@ export interface IdPathParams {
 }
 
 export class BaseController {
-    protected idValidatorObject = Joi.string()
-        .min(1)
-        .regex(/^[\w.]+$/);
+    protected idValidatorObject = Joi.alternatives(
+        Joi.string().regex(/^[\dA-Fa-f]{24}$/, 'Invalid object id'),
+        Joi.object().keys({
+            id: Joi.any(),
+            _bsontype: Joi.allow('ObjectId')
+        })
+    );
     protected usernameValidatorObject = Joi.string()
         .min(1)
         .regex(/^[\w.]+$/);
@@ -22,9 +26,9 @@ export class BaseController {
     protected emailValidatorObject = Joi.string().email();
     protected roleValidatorObject = Joi.string().valid(...Object.values(UserRole));
 
-    protected idPathParamsValidator = Joi.object({
+    protected idPathParamsValidator = {
         id: this.idValidatorObject
-    });
+    };
 
     private extractPathParam(req: Request, param: string): string | undefined {
         const pathParam = req.params[param];
@@ -36,7 +40,7 @@ export class BaseController {
         return pathParam;
     }
 
-    private getPathParamsObject<T>(req: Request, paramsSchema: Joi.ObjectSchema<T>): T {
+    private getPathParamsObject<T>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
         const params: any = {};
 
         for (const pathParam in paramsSchema) {
@@ -46,10 +50,13 @@ export class BaseController {
         return params as T;
     }
 
-    protected validatePathParams<T = any>(req: Request, paramsSchema: Joi.ObjectSchema<T>): T {
+    protected validatePathParams<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
         const paramsObject = this.getPathParamsObject<T>(req, paramsSchema);
 
-        const { error, value } = paramsSchema.validate(paramsObject, { convert: true, presence: 'required' });
+        const { error, value } = Joi.object(paramsSchema).validate(paramsObject, {
+            convert: true,
+            presence: 'required'
+        });
 
         if (error) {
             throw new InvalidPathParamError(error.message);
@@ -62,8 +69,8 @@ export class BaseController {
         return this.validatePathParams<IdPathParams>(req, this.idPathParamsValidator);
     }
 
-    protected validatePostBody<T = any>(req: Request, paramsSchema: Joi.ObjectSchema<T>): T {
-        const { error, value } = paramsSchema.validate(req.body, { presence: 'required' });
+    protected validatePostBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+        const { error, value } = Joi.object(paramsSchema).validate(req.body, { presence: 'required' });
 
         if (error) {
             throw new InvalidBodyError(error.message);

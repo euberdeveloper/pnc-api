@@ -1,6 +1,4 @@
 import { Request, Response } from 'express';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import Joi = require('joi');
 
 import { userService } from '@/services';
 import { User } from '@/types';
@@ -12,15 +10,15 @@ interface UsernamePathParams {
 }
 
 export class UsersController extends BaseController {
-    private readonly usernamePathParamsValidator = Joi.object({
+    private readonly usernamePathParamsValidator = {
         username: this.usernameValidatorObject
-    });
-    private readonly bodyValidator = Joi.object({
+    };
+    private readonly bodyValidator = {
         username: this.usernameValidatorObject,
         password: this.passwordValidatorObject,
         role: this.roleValidatorObject,
         email: this.emailValidatorObject
-    });
+    };
 
     constructor(private readonly users = userService) {
         super();
