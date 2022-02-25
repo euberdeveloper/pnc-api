@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import { authenticateJwt } from '@/utils/auth';
 
-import { userService } from '@/services';
+import { usersController } from '@/controllers';
 import permission from '@/utils/permission';
 import asyncHandler from '@/utils/asyncHandler';
-import { User, UserRole } from '@/types';
+import { UserRole } from '@/types';
 
 export default function (): Router {
     const router = Router();
@@ -13,27 +13,15 @@ export default function (): Router {
         '/',
         authenticateJwt,
         permission([UserRole.ADMIN]),
-        asyncHandler(async (_req, res) => {
-            const utenti = await userService.getAll();
-            res.json(utenti);
-        })
+        asyncHandler(usersController.getAll.bind(usersController))
     );
 
-    // router.get('/me', authenticateJwt, (req, res) => {
-    //     const user = req.user;
-    //     const parsedUser = utenteService.purgeUtente(user);
-    //     res.json(parsedUser);
-    // });
+    router.get('/me', authenticateJwt, (req, res) => {
+        const user = req.user;
+        res.json(user);
+    });
 
-    // router.get(
-    //     '/:uid',
-    //     authenticateJwt,
-    //     asyncHandler(async (req, res) => {
-    //         const uid = req.params.uid;
-    //         const utente = await utenteService.getUtenteByUid(uid);
-    //         res.json(utente);
-    //     })
-    // );
+    router.get('/:id', authenticateJwt, asyncHandler(usersController.get.bind(usersController)));
 
     // router.get(
     //     '/username/:username',
@@ -130,54 +118,12 @@ export default function (): Router {
     //     })
     // );
 
-    // router.post(
-    //     '/password-recovery',
-    //     asyncHandler(async (req, res) => {
-    //         const body = req.body;
-    //         await utenteService.askPasswordRecovery(body);
-    //         res.json();
-    //     })
-    // );
-
-    // router.get(
-    //     '/password-recovery/:token',
-    //     asyncHandler(async (req, res) => {
-    //         const token = req.params.token;
-    //         const utente = await utenteService.getRecoveryPasswordUtente(token);
-    //         res.json(utente);
-    //     })
-    // );
-
-    // router.post(
-    //     '/password-recovery/:token',
-    //     asyncHandler(async (req, res) => {
-    //         const token = req.params.token;
-    //         const body = req.body;
-    //         await utenteService.recoverPassword(token, body);
-    //         res.json();
-    //     })
-    // );
-
-    router.delete(
-        '/:id',
-        authenticateJwt,
-        asyncHandler(async (req, res) => {
-            const user = req.user as User;
-            const id = req.params.id;
-            await userService.deleteById(user, id);
-            res.json();
-        })
-    );
+    router.delete('/:id', authenticateJwt, asyncHandler(usersController.delete.bind(usersController)));
 
     router.delete(
         '/username/:username',
         authenticateJwt,
-        asyncHandler(async (req, res) => {
-            const user = req.user as User;
-            const username = req.params.username;
-            await userService.deleteByUsername(user, username);
-            res.json();
-        })
+        asyncHandler(usersController.deleteByUsername.bind(usersController))
     );
 
     return router;
