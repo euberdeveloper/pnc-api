@@ -3,7 +3,7 @@ import * as jwt from 'jsonwebtoken';
 import logger from 'euberlog';
 
 import { databaseService } from '@/services';
-import { InvalidCredentialsError, NotFoundError } from '@/errors';
+import { InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
 import { User } from '@/types';
 import CONFIG from '@/config';
 
@@ -41,11 +41,13 @@ export class AuthService {
     public async verifyUserWithJwt(jwtPayload: any): Promise<User> {
         const id: string | null = jwtPayload?.sub;
         if (id === null) {
+            logger.warning('Error in verifying user with jwt: subject is null');
             throw new InvalidCredentialsError('Invalid token: subject is null');
         }
         const user = await this.findById(id);
         if (user === null) {
-            throw new InvalidCredentialsError('Invalid token');
+            logger.warning('Error in verifying user with jwt: user not found', id);
+            throw new InvalidCredentialsError('Invalid token: user is not found');
         }
         return user;
     }
@@ -82,11 +84,12 @@ export class AuthService {
 
     public async deserializeUser(uid: string): Promise<User> {
         try {
-            const utente = await this.findById(uid);
-            if (utente === null) {
-                throw new NotFoundError('User with uid not found');
+            const user = await this.findById(uid);
+            if (user === null) {
+                logger.warning('Error in deserializing user: user not found', user);
+                throw new UserNotAuthenticatedError('User subject in jwt not found');
             }
-            return utente;
+            return user;
         } catch (error) {
             logger.warning('Error in deserializing user', error);
             throw error;
