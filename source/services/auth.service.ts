@@ -41,7 +41,7 @@ export class AuthService {
     public async verifyUserWithJwt(jwtPayload: any): Promise<User> {
         const id: string | null = jwtPayload?.sub;
         if (id === null) {
-            throw new InvalidCredentialsError('Invalid token');
+            throw new InvalidCredentialsError('Invalid token: subject is null');
         }
         const user = await this.findById(id);
         if (user === null) {
@@ -51,11 +51,12 @@ export class AuthService {
     }
 
     public generateAuthResponse(user: User): AuthResponse {
-        const sub = user.id;
-        const token = jwt.sign({ sub, role: user.role }, this.options.jwtOptions.PRIVATE_PASSWORD, {
+        const subject = user.id;
+        const token = jwt.sign({ role: user.role }, this.options.jwtOptions.PRIVATE_PASSWORD, {
             algorithm: this.options.jwtOptions.ALGORITHM as jwt.Algorithm,
             expiresIn: this.options.jwtOptions.EXPIRATION,
-            issuer: this.options.jwtOptions.ISSUER
+            issuer: this.options.jwtOptions.ISSUER,
+            subject
         });
 
         const response: AuthResponse = {
