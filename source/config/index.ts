@@ -54,6 +54,7 @@ const CONFIG = {
         }
     },
     LEARNWORLDS: {
+        API_ENDPOINT: process.env.LEARNWORLDS_API_ENDPOINT,
         CLIENT_ID: process.env.LEARNWORLDS_CLIENT_ID,
         CLIENT_SECRET: process.env.LEARNWORLDS_CLIENT_SECRET,
         GRANT_TYPE: process.env.LEARNWORLDS_GRANT_TYPE
