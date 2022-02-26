@@ -1,3 +1,2 @@
 export * from './user';
-export * from './course';
-export * from './stundent';
+export * from './group';

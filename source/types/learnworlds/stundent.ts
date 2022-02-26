@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import { User, UserRole } from '.';
+import { User, UserRole } from '@/types';
 
 export interface Student {
     id: string;

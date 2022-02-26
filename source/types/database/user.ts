@@ -1,4 +1,4 @@
-import { Student } from '.';
+import { Student } from '@/types';
 
 export enum UserRole {
     ADMIN = 'admin',
