@@ -1,18 +1,9 @@
 import { databaseService, authService } from '@/services';
 import { User, UserRole } from '@/types';
-import CONFIG from '@/config';
 import { NotFoundError, UserNotAuthorizedError } from '@/errors';
 
-interface UserServiceOptions {
-    jwtOptions: typeof CONFIG.SECURITY.JWT;
-}
-
 export class UserService {
-    constructor(
-        private readonly options: UserServiceOptions,
-        private readonly db = databaseService,
-        private readonly auth = authService
-    ) {}
+    constructor(private readonly db = databaseService, private readonly auth = authService) {}
 
     public async getAll(): Promise<User[]> {
         return this.db.userModel.find();
@@ -63,6 +54,4 @@ export class UserService {
     }
 }
 
-export const userService = new UserService({
-    jwtOptions: CONFIG.SECURITY.JWT
-});
+export const userService = new UserService();
