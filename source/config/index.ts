@@ -51,6 +51,9 @@ const CONFIG = {
             PUBLIC_PASSWORD: fileContent(getPath(process.env.SECURITY_JWT_PUBLIC_PASSWORD_PATH)),
             EXPIRATION: process.env.SECURITY_JWT_EXPIRATION,
             ISSUER: process.env.SECURITY_JWT_ISSUER
+        },
+        PNC_API: {
+            TOKEN: process.env.SECURITY_PNC_API_TOKEN
         }
     },
     LEARNWORLDS: {

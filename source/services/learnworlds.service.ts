@@ -2,7 +2,7 @@
 import axios from 'axios';
 import logger from 'euberlog';
 
-import { Course } from '@/types';
+import { Course, Student, UserRole } from '@/types';
 import CONFIG from '@/config';
 
 interface LearnWorldsServiceOptions {
@@ -58,6 +58,11 @@ export class LearnWorldsService {
     public async getCourses(): Promise<Course[]> {
         const response = await axios.get(`${this.host}/v2/courses`, { headers: await this.getHeaders() });
         return response.data.data;
+    }
+
+    public async getStudent(id: string): Promise<Student | null> {
+        const response = await axios.get(`${this.host}/v2/users/${id}`, { headers: await this.getHeaders() });
+        return { ...response.data, role: UserRole.STUDENT };
     }
 }
 

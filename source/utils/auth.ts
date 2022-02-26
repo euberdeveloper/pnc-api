@@ -1,10 +1,11 @@
 import * as passport from 'passport';
-import { Handler } from 'express';
+import { Handler, Request } from 'express';
 import { Strategy as LocalStrategy } from 'passport-local';
 import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { Strategy as CustomStrategy, VerifiedCallback } from 'passport-custom';
 import logger from 'euberlog';
 
-import { authService } from '@/services/auth.service';
+import { authService, SerializedUser } from '@/services/auth.service';
 import { InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
 import CONFIG from '@/config';
 
@@ -39,15 +40,28 @@ export const authenticateLocal: Handler = function authenticate(req, res, next) 
     })(req, res, next);
 };
 
+export const authenticateLearnWorlds: Handler = function authenticate(req, res, next) {
+    passport.authenticate('learnworlds', function (err, user, _info) {
+        if (err) {
+            const error = new InvalidCredentialsError();
+            next(error);
+        } else {
+            req.login(user, err => {
+                next(err);
+            });
+        }
+    })(req, res, next);
+};
+
 export function initializePassport(): Handler {
     passport.serializeUser((user, done) => {
-        const uid = authService.serializeUser(user as any);
-        done(null, uid);
+        const serializedUser = authService.serializeUser(user as any);
+        done(null, serializedUser);
     });
 
-    passport.deserializeUser((uid: string, done) => {
+    passport.deserializeUser((serializedUser: SerializedUser, done) => {
         authService
-            .deserializeUser(uid)
+            .deserializeUser(serializedUser)
             .then(user => done(null, user))
             .catch(error => done(error));
     });
@@ -84,6 +98,24 @@ export function initializePassport(): Handler {
                     .catch(error => done(error, null));
             }
         )
+    );
+
+    passport.use(
+        'learnworlds',
+        new CustomStrategy(function (req: Request, done: VerifiedCallback) {
+            const authorization = req.headers.authorization;
+            const apiToken = authorization?.split('Bearer ')?.[1] ?? null;
+            const studentId = req.body.studentId;
+
+            async function authenticate() {
+                const student = await authService.verifyUserWithToken(apiToken, studentId);
+                return student;
+            }
+
+            authenticate()
+                .then(user => done(null, user))
+                .catch(error => done(error, null));
+        })
     );
 
     return passport.initialize();

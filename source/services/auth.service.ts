@@ -4,12 +4,19 @@ import logger from 'euberlog';
 
 import { databaseService } from '@/services';
 import { InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
-import { User } from '@/types';
+import { Student, User, UserRole } from '@/types';
 import CONFIG from '@/config';
+import { learnWorldsService } from './learnworlds.service';
 
 interface AuthServiceOptions {
     jwtOptions: typeof CONFIG.SECURITY.JWT;
     saltRounds: typeof CONFIG.SECURITY.SALT_ROUNDS;
+    pncApi: typeof CONFIG.SECURITY.PNC_API;
+}
+
+export interface SerializedUser {
+    id: string;
+    role: UserRole;
 }
 
 export interface AuthResponse {
@@ -18,13 +25,17 @@ export interface AuthResponse {
 }
 
 export class AuthService {
-    constructor(private readonly options: AuthServiceOptions, private readonly dbService = databaseService) {}
+    constructor(
+        private readonly options: AuthServiceOptions,
+        private readonly db = databaseService,
+        private readonly learnWorlds = learnWorldsService
+    ) {}
 
     private async findById(id: string): Promise<User | null> {
-        return this.dbService.userModel.findById(id);
+        return this.db.userModel.findById(id);
     }
     private async findByUsername(username: string): Promise<User | null> {
-        return this.dbService.userModel.findOne({ username });
+        return this.db.userModel.findOne({ username });
     }
     public async verifyUsernameAndPassword(username: string, password: string): Promise<User> {
         const user = await this.findByUsername(username);
@@ -50,6 +61,19 @@ export class AuthService {
             throw new InvalidCredentialsError('Invalid token: user is not found');
         }
         return user;
+    }
+
+    public async verifyUserWithToken(token: string | null, studentId: string): Promise<boolean> {
+        if (token !== this.options.pncApi.TOKEN) {
+            throw new InvalidCredentialsError('Invalid access token');
+        }
+
+        const student = await this.learnWorlds.getStudent(studentId);
+        if (!student) {
+            throw new InvalidCredentialsError('Student of learn worlds not found');
+        }
+
+        return true;
     }
 
     public generateAuthResponse(user: User): AuthResponse {
@@ -78,13 +102,16 @@ export class AuthService {
         return await bcrypt.hash(password, this.options.saltRounds);
     }
 
-    public serializeUser(user: User): string {
-        return user.id;
+    public serializeUser(user: User | Student): SerializedUser {
+        return { id: user.id, role: user.role };
     }
 
-    public async deserializeUser(uid: string): Promise<User> {
+    public async deserializeUser(serializedUser: SerializedUser): Promise<User | Student> {
         try {
-            const user = await this.findById(uid);
+            const user =
+                serializedUser.role === UserRole.STUDENT
+                    ? await this.learnWorlds.getStudent(serializedUser.id)
+                    : await this.findById(serializedUser.id);
             if (user === null) {
                 logger.warning('Error in deserializing user: user not found', user);
                 throw new UserNotAuthenticatedError('User subject in jwt not found');
@@ -99,5 +126,6 @@ export class AuthService {
 
 export const authService = new AuthService({
     jwtOptions: CONFIG.SECURITY.JWT,
-    saltRounds: CONFIG.SECURITY.SALT_ROUNDS
+    saltRounds: CONFIG.SECURITY.SALT_ROUNDS,
+    pncApi: CONFIG.SECURITY.PNC_API
 });
