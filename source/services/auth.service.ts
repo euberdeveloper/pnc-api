@@ -2,11 +2,10 @@ import * as bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
 import logger from 'euberlog';
 
-import { databaseService } from '@/services';
+import { databaseService, learnWorldsService } from '@/services';
 import { InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
 import { Student, User, UserRole } from '@/types';
 import CONFIG from '@/config';
-import { learnWorldsService } from './learnworlds.service';
 
 interface AuthServiceOptions {
     jwtOptions: typeof CONFIG.SECURITY.JWT;
@@ -79,7 +78,7 @@ export class AuthService {
         return user;
     }
 
-    public async verifyUserWithToken(token: string | null, studentId: string): Promise<boolean> {
+    public async verifyUserWithToken(token: string | null, studentId: string): Promise<Student> {
         if (token !== this.options.pncApi.TOKEN) {
             logger.warning('Error in verifying user with token: invalid access token');
             throw new InvalidCredentialsError('Invalid access token');
@@ -91,7 +90,7 @@ export class AuthService {
             throw new InvalidCredentialsError('Student of learn worlds not found');
         }
 
-        return true;
+        return student;
     }
 
     public generateAuthUserResponse(user: User): AuthUserResponse {
