@@ -6,7 +6,8 @@ export class GroupService {
     constructor(private readonly db = databaseService, private readonly learnWorlds = learnWorldsService) {}
 
     private async checkIfCourseExists(courseId: string): Promise<void> {
-        const course = await this.learnWorlds.getCourse(courseId);
+        // TODO: fix learnworlds deps undefined
+        const course = await learnWorldsService.getCourse(courseId);
 
         if (!course) {
             throw new CourseDoesNotExistError();

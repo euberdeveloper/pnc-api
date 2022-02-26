@@ -25,8 +25,7 @@ export class GroupsController extends BaseController {
     private readonly bodyValidator = {
         name: Joi.string().min(1).max(1000),
         description: Joi.string().min(1).max(50_000),
-        maxPartecipants: Joi.number().min(1),
-        courseId: Joi.string().min(1).max(1000)
+        maxPartecipants: Joi.number().min(1)
     };
 
     constructor(private readonly groups = groupService) {
@@ -47,7 +46,8 @@ export class GroupsController extends BaseController {
 
     public async create(req: Request, res: Response): Promise<void> {
         const { courseId } = this.validatePathParams<GroupBasePathParams>(req, this.groupBaseIdPathParamsValidator);
-        const body = this.validatePostBody<Group>(req, this.bodyValidator);
+        const requestBody = this.validatePostBody<Group>(req, this.bodyValidator);
+        const body = { ...requestBody, courseId };
         const id = await this.groups.create(courseId, body);
         res.json(id);
     }
