@@ -1,6 +1,6 @@
 import * as mongoose from 'mongoose';
 
-import { UserModel } from '@/models';
+import { UserModel, GroupModel } from '@/models';
 import CONFIG from '@/config';
 
 interface DatabaseServiceOptions {
@@ -10,7 +10,11 @@ interface DatabaseServiceOptions {
 export class DatabaseService {
     public connection: typeof mongoose | null = null;
 
-    constructor(private readonly options: DatabaseServiceOptions, public readonly userModel = UserModel) {}
+    constructor(
+        private readonly options: DatabaseServiceOptions,
+        public readonly userModel = UserModel,
+        public readonly groupModel = GroupModel
+    ) {}
 
     public async connect(): Promise<void> {
         this.connection = await mongoose.connect(this.options.databaseUri);

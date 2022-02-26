@@ -60,6 +60,21 @@ export class LearnWorldsService {
         return response.data.data;
     }
 
+    public async getCourse(id: string): Promise<Course | null> {
+        try {
+            const response = await axios.get(`${this.host}/v2/courses/${id}`, { headers: await this.getHeaders() });
+            return { ...response.data, role: UserRole.STUDENT };
+        } catch (error) {
+            const err = error as AxiosError;
+
+            if (err.response?.status === 404) {
+                return null;
+            } else {
+                throw error;
+            }
+        }
+    }
+
     public async getStudent(id: string): Promise<Student | null> {
         try {
             const response = await axios.get(`${this.host}/v2/users/${id}`, { headers: await this.getHeaders() });
