@@ -1,29 +1,28 @@
 import { Request, Response } from 'express';
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import Joi = require('joi');
 
 import { authService } from '@/services';
 
 import { BaseController } from './base';
 
-interface LoginBody {
+export interface LoginBody {
     username: string;
     password: string;
 }
 
 export class AuthController extends BaseController {
-    private readonly loginValidator = Joi.object<LoginBody>({
-        username: Joi.string().min(1),
-        password: Joi.string().min(1)
-    });
-
     constructor(private readonly auth = authService) {
         super();
     }
 
-    public login(req: Request, res: Response): void {
+    public loginUser(req: Request, res: Response): void {
         const user = this.requireUser(req);
-        const response = this.auth.generateAuthResponse(user);
+        const response = this.auth.generateAuthUserResponse(user);
+        res.json(response);
+    }
+
+    public loginStudent(req: Request, res: Response): void {
+        const user = this.requireStudent(req);
+        const response = this.auth.generateAuthStudentResponse(user);
         res.json(response);
     }
 }

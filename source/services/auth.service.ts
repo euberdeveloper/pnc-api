@@ -19,9 +19,14 @@ export interface SerializedUser {
     role: UserRole;
 }
 
-export interface AuthResponse {
+export interface AuthUserResponse {
     token: string;
     user: Omit<User, 'password'>;
+}
+
+export interface AuthStudentResponse {
+    token: string;
+    user: Student;
 }
 
 export class AuthService {
@@ -37,13 +42,24 @@ export class AuthService {
     private async findByUsername(username: string): Promise<User | null> {
         return this.db.userModel.findOne({ username });
     }
+    private generateToken(user: User | Student): string {
+        const subject = user.id;
+        return jwt.sign({ role: user.role }, this.options.jwtOptions.PRIVATE_PASSWORD, {
+            algorithm: this.options.jwtOptions.ALGORITHM as jwt.Algorithm,
+            expiresIn: this.options.jwtOptions.EXPIRATION,
+            issuer: this.options.jwtOptions.ISSUER,
+            subject
+        });
+    }
     public async verifyUsernameAndPassword(username: string, password: string): Promise<User> {
         const user = await this.findByUsername(username);
         if (user === null) {
+            logger.warning('Error in verifying username and password: wrong username');
             throw new InvalidCredentialsError('Wrong username or password');
         }
         const rightPassword = await bcrypt.compare(password, user.password);
         if (!rightPassword) {
+            logger.warning('Error in verifying username and password: wrong password');
             throw new InvalidCredentialsError('Wrong username or password');
         }
         return user;
@@ -65,27 +81,23 @@ export class AuthService {
 
     public async verifyUserWithToken(token: string | null, studentId: string): Promise<boolean> {
         if (token !== this.options.pncApi.TOKEN) {
+            logger.warning('Error in verifying user with token: invalid access token');
             throw new InvalidCredentialsError('Invalid access token');
         }
 
         const student = await this.learnWorlds.getStudent(studentId);
         if (!student) {
+            logger.warning('Error in verifying user with token: student not found');
             throw new InvalidCredentialsError('Student of learn worlds not found');
         }
 
         return true;
     }
 
-    public generateAuthResponse(user: User): AuthResponse {
-        const subject = user.id;
-        const token = jwt.sign({ role: user.role }, this.options.jwtOptions.PRIVATE_PASSWORD, {
-            algorithm: this.options.jwtOptions.ALGORITHM as jwt.Algorithm,
-            expiresIn: this.options.jwtOptions.EXPIRATION,
-            issuer: this.options.jwtOptions.ISSUER,
-            subject
-        });
+    public generateAuthUserResponse(user: User): AuthUserResponse {
+        const token = this.generateToken(user);
 
-        const response: AuthResponse = {
+        const response: AuthUserResponse = {
             token,
             user: {
                 id: user.id,
@@ -95,6 +107,18 @@ export class AuthService {
                 creationDate: user.creationDate
             }
         };
+
+        return response;
+    }
+
+    public generateAuthStudentResponse(user: Student): AuthStudentResponse {
+        const token = this.generateToken(user);
+
+        const response: AuthStudentResponse = {
+            token,
+            user
+        };
+
         return response;
     }
 

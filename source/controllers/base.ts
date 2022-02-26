@@ -3,7 +3,7 @@ import { Request } from 'express';
 import Joi = require('joi');
 
 import { InvalidBodyError, InvalidPathParamError, UserNotAuthenticatedError } from '@/errors';
-import { User, UserRole } from '@/types';
+import { Student, User, UserRole } from '@/types';
 
 export interface IdPathParams {
     id: string;
@@ -79,11 +79,19 @@ export class BaseController {
         return value as T;
     }
 
-    protected requireUser(req: Request): User {
+    protected requireGenericUser(req: Request): User | Student {
         if (!req.user) {
             throw new UserNotAuthenticatedError();
         }
 
-        return req.user as User;
+        return req.user as User | Student;
+    }
+
+    protected requireUser(req: Request): User {
+        return this.requireGenericUser(req) as User;
+    }
+
+    protected requireStudent(req: Request): Student {
+        return this.requireGenericUser(req) as Student;
     }
 }

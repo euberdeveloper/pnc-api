@@ -6,7 +6,7 @@ import { Strategy as CustomStrategy, VerifiedCallback } from 'passport-custom';
 import logger from 'euberlog';
 
 import { authService, SerializedUser } from '@/services/auth.service';
-import { InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
+import { ApiError, InvalidCredentialsError, UserNotAuthenticatedError } from '@/errors';
 import CONFIG from '@/config';
 
 export const authenticateJwt: Handler = function authenticate(req, res, next) {
@@ -17,7 +17,7 @@ export const authenticateJwt: Handler = function authenticate(req, res, next) {
     passport.authenticate('jwt', function (_error, user, info) {
         if (info) {
             logger.warning('Error in jwt authentication', info);
-            const error = new UserNotAuthenticatedError();
+            const error = info instanceof ApiError ? info : new UserNotAuthenticatedError();
             next(error);
         } else {
             req.login(user, err => {
@@ -30,7 +30,7 @@ export const authenticateJwt: Handler = function authenticate(req, res, next) {
 export const authenticateLocal: Handler = function authenticate(req, res, next) {
     passport.authenticate('local', function (err, user, _info) {
         if (err) {
-            const error = new InvalidCredentialsError();
+            const error = err instanceof ApiError ? err : new InvalidCredentialsError();
             next(error);
         } else {
             req.login(user, err => {
@@ -43,7 +43,7 @@ export const authenticateLocal: Handler = function authenticate(req, res, next) 
 export const authenticateLearnWorlds: Handler = function authenticate(req, res, next) {
     passport.authenticate('learnworlds', function (err, user, _info) {
         if (err) {
-            const error = new InvalidCredentialsError();
+            const error = err instanceof ApiError ? err : new InvalidCredentialsError();
             next(error);
         } else {
             req.login(user, err => {

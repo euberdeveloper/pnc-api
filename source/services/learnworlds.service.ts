@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/naming-convention */
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import logger from 'euberlog';
 
 import { Course, Student, UserRole } from '@/types';
@@ -61,8 +61,18 @@ export class LearnWorldsService {
     }
 
     public async getStudent(id: string): Promise<Student | null> {
-        const response = await axios.get(`${this.host}/v2/users/${id}`, { headers: await this.getHeaders() });
-        return { ...response.data, role: UserRole.STUDENT };
+        try {
+            const response = await axios.get(`${this.host}/v2/users/${id}`, { headers: await this.getHeaders() });
+            return { ...response.data, role: UserRole.STUDENT };
+        } catch (error) {
+            const err = error as AxiosError;
+
+            if (err.response?.status === 404) {
+                return null;
+            } else {
+                throw error;
+            }
+        }
     }
 }
 
