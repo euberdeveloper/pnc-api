@@ -1,4 +1,5 @@
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 const DtsBundleWebpack = require('dts-bundle-webpack');
 
 module.exports = {
@@ -36,6 +37,7 @@ module.exports = {
             out: '../bundled/index.d.ts'
         })
     ],
+    externals: [nodeExternals()],
     output: {
         path: path.resolve(__dirname, './bundled'),
         filename: 'index.js',
