@@ -10,7 +10,7 @@ export * from './controllers';
 const DEFAULT_ROOT_ENDPOINT = 'http://localhost:3000/api/';
 
 export type ErrorHandler = (error: { error: AxiosError; config: any }) => void | Promise<void>;
-export class OperaTN {
+export class PncSDK {
     private _token!: string | null;
     private _apiRootEndpoint!: string;
     private _errorHandler!: ErrorHandler | null;
