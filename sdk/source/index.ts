@@ -1,3 +1,3 @@
-export * from './errors/api-errors';
+export * from './errors';
 export * from './types';
 export * from './api';
