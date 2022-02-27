@@ -3,10 +3,11 @@ import { Group } from '@/types/database';
 
 const schema = new Schema<Group>(
     {
-        name: { type: String, required: true },
+        name: { type: String, required: true, unique: true },
         description: { type: String, required: true },
         maxPartecipants: { type: Number, required: true },
         creationDate: { type: Date, default: new Date() },
+        partecipants: [{ type: Array, default: [] }],
         courseId: { type: String, required: true }
     },
     {
