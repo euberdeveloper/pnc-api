@@ -1,0 +1,52 @@
+{
+  "name": "operatn-api-client",
+  "version": "0.19.7",
+  "description": "The api client for operatn",
+  "main": "bundled/index.js",
+  "types": "bundled/index.d.ts",
+  "files": [
+    "package.json",
+    "bundled",
+    "README.md"
+  ],
+  "scripts": {
+    "port": "node scripts/port",
+    "port:lint": "node scripts/port && npm run lint:fix",
+    "clean": "shx rm -rf dist bundled",
+    "pretranspile": "npm run clean && npm run port",
+    "transpile": "tsc -p source",
+    "lint": "eslint source --ext ts --format codeframe",
+    "lint:fix": "eslint source --ext ts --format codeframe --fix",
+    "prebundle": "npm run clean && npm run port && npm run lint:fix",
+    "bundle": "webpack",
+    "docs": "typedoc",
+    "prepublishOnly": "npm run clean && npm run bundle"
+  },
+  "author": "Eugenio Vinicio Berretta <euberdeveloper@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.21.1",
+    "queryencoder": "^1.1.2"
+  },
+  "devDependencies": {
+    "@euberdeveloper/eslint-plugin": "^1.1.3",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "dts-bundle-webpack": "^1.0.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-config-typescript": "^3.0.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "fs-extra": "^10.0.0",
+    "prettier": "^2.4.1",
+    "shx": "^0.3.3",
+    "ts-loader": "^9.2.6",
+    "ttypescript": "^1.5.12",
+    "typedoc": "^0.22.5",
+    "typescript": "^4.4.3",
+    "typescript-transform-paths": "^3.3.1",
+    "webpack": "^5.58.1",
+    "webpack-cli": "^4.9.0",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
