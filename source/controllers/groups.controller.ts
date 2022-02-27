@@ -14,13 +14,21 @@ interface GroupIdPathParams extends GroupBasePathParams {
     id: string;
 }
 
+interface GroupPartecipantsPathParams extends GroupIdPathParams {
+    studentId: string;
+}
+
 export class GroupsController extends BaseController {
     private readonly groupBaseIdPathParamsValidator = {
-        courseId: Joi.string().min(1).max(1000).required()
+        courseId: this.learnWorldsIdValidatorObject
     };
     private readonly groupIdPathParamsValidator = {
         ...this.groupBaseIdPathParamsValidator,
         id: this.idValidatorObject
+    };
+    private readonly groupPartecipantsPathParamsValidator = {
+        ...this.groupIdPathParamsValidator,
+        studentId: this.learnWorldsIdValidatorObject
     };
     private readonly bodyValidator = {
         name: Joi.string().min(1).max(1000),
@@ -50,6 +58,26 @@ export class GroupsController extends BaseController {
         const body = { ...requestBody, courseId };
         const id = await this.groups.create(courseId, body);
         res.json(id);
+    }
+
+    public async addPartecipant(req: Request, res: Response): Promise<void> {
+        const { id, studentId } = this.validatePathParams<GroupPartecipantsPathParams>(
+            req,
+            this.groupPartecipantsPathParamsValidator
+        );
+
+        await this.groups.addPartecipant(id, studentId);
+        res.json();
+    }
+
+    public async removePartecipant(req: Request, res: Response): Promise<void> {
+        const { id, studentId } = this.validatePathParams<GroupPartecipantsPathParams>(
+            req,
+            this.groupPartecipantsPathParamsValidator
+        );
+
+        await this.groups.removePartecipant(id, studentId);
+        res.json();
     }
 
     public async delete(req: Request, res: Response): Promise<void> {

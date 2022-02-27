@@ -16,6 +16,18 @@ export default function (): Router {
 
     router.post('/', permission([UserRole.ADMIN]), asyncHandler(groupsController.create.bind(groupsController)));
 
+    router.put(
+        '/:id/partecipants/:studentId',
+        permission([UserRole.STUDENT]),
+        asyncHandler(groupsController.addPartecipant.bind(groupsController))
+    );
+
+    router.delete(
+        '/:id/partecipants/:studentId',
+        permission([UserRole.STUDENT]),
+        asyncHandler(groupsController.removePartecipant.bind(groupsController))
+    );
+
     router.delete('/:id', permission([UserRole.ADMIN]), asyncHandler(groupsController.delete.bind(groupsController)));
 
     return router;

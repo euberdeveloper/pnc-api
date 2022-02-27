@@ -25,6 +25,7 @@ export class BaseController {
     );
     protected emailValidatorObject = Joi.string().email();
     protected roleValidatorObject = Joi.string().valid(...Object.values(UserRole));
+    protected learnWorldsIdValidatorObject = Joi.string().min(1).max(1000).required();
 
     protected idPathParamsValidator = {
         id: this.idValidatorObject

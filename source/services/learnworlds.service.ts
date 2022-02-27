@@ -89,6 +89,23 @@ export class LearnWorldsService {
             }
         }
     }
+
+    public async checkIfStudentHasCourse(courseId: string, studentId: string): Promise<boolean> {
+        try {
+            const response = await axios.get(`${this.host}/v2/users/${studentId}/courses/${courseId}`, {
+                headers: await this.getHeaders()
+            });
+            return response.data.data.find((element: any) => element.course.id === courseId);
+        } catch (error) {
+            const err = error as AxiosError;
+
+            if (err.response?.status === 404) {
+                return false;
+            } else {
+                throw error;
+            }
+        }
+    }
 }
 
 export const learnWorldsService = new LearnWorldsService({

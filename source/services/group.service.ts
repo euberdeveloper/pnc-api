@@ -1,5 +1,5 @@
 import { databaseService, learnWorldsService } from '@/services';
-import { CourseDoesNotExistError, NotFoundError } from '@/errors';
+import { CourseDoesNotExistError, InvalidBodyError, NotFoundError } from '@/errors';
 import { Group } from '@/types';
 
 export class GroupService {
@@ -11,6 +11,13 @@ export class GroupService {
 
         if (!course) {
             throw new CourseDoesNotExistError();
+        }
+    }
+
+    private async checkIfStudentIsValidForCourse(courseId: string, studentId: string): Promise<void> {
+        // TODO: fix learnworlds deps undefined
+        if (!(await learnWorldsService.checkIfStudentHasCourse(courseId, studentId))) {
+            throw new InvalidBodyError('Student does not have this course');
         }
     }
 
@@ -34,6 +41,36 @@ export class GroupService {
         const group = new this.db.groupModel(body);
         await group.save();
         return group.id;
+    }
+
+    public async addPartecipant(groupId: string, userId: string): Promise<void> {
+        const group = await this.db.groupModel.findById(groupId);
+
+        if (!group) {
+            throw new NotFoundError('Group not found');
+        }
+
+        if (group.partecipants.includes(userId)) {
+            throw new InvalidBodyError('User is already a partecipant');
+        }
+
+        if (group.partecipants.length >= group.maxPartecipants) {
+            throw new InvalidBodyError('Group is full');
+        }
+
+        await this.checkIfStudentIsValidForCourse(group.courseId, userId);
+        await this.db.groupModel.updateOne({ _id: groupId }, { $addToSet: { partecipants: userId } });
+    }
+
+    public async removePartecipant(groupId: string, userId: string): Promise<void> {
+        const group = await this.db.groupModel.findById(groupId);
+
+        if (!group) {
+            throw new NotFoundError('Group not found');
+        }
+
+        group.partecipants = group.partecipants.filter(partecipant => partecipant !== userId);
+        await group.save();
     }
 
     public async deleteById(id: string): Promise<void> {
