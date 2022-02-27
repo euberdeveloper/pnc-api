@@ -43,14 +43,14 @@ export class GroupService {
         return group.id;
     }
 
-    public async addPartecipant(groupId: string, userId: string): Promise<void> {
+    public async addPartecipant(groupId: string, studentId: string): Promise<void> {
         const group = await this.db.groupModel.findById(groupId);
 
         if (!group) {
             throw new NotFoundError('Group not found');
         }
 
-        if (group.partecipants.includes(userId)) {
+        if (group.partecipants.includes(studentId)) {
             throw new InvalidBodyError('User is already a partecipant');
         }
 
@@ -58,8 +58,10 @@ export class GroupService {
             throw new InvalidBodyError('Group is full');
         }
 
-        await this.checkIfStudentIsValidForCourse(group.courseId, userId);
-        await this.db.groupModel.updateOne({ _id: groupId }, { $addToSet: { partecipants: userId } });
+        await this.checkIfStudentIsValidForCourse(group.courseId, studentId);
+
+        group.partecipants.push(studentId);
+        await group.save();
     }
 
     public async removePartecipant(groupId: string, userId: string): Promise<void> {

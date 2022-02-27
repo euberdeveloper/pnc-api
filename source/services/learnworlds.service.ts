@@ -92,10 +92,10 @@ export class LearnWorldsService {
 
     public async checkIfStudentHasCourse(courseId: string, studentId: string): Promise<boolean> {
         try {
-            const response = await axios.get(`${this.host}/v2/users/${studentId}/courses/${courseId}`, {
+            const response = await axios.get(`${this.host}/v2/users/${studentId}/courses`, {
                 headers: await this.getHeaders()
             });
-            return response.data.data.find((element: any) => element.course.id === courseId);
+            return response.data?.data?.find((c: any) => c.course.id === courseId) !== undefined;
         } catch (error) {
             const err = error as AxiosError;
 

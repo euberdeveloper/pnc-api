@@ -7,7 +7,7 @@ const schema = new Schema<Group>(
         description: { type: String, required: true },
         maxPartecipants: { type: Number, required: true },
         creationDate: { type: Date, default: new Date() },
-        partecipants: [{ type: Array, default: [] }],
+        partecipants: [{ type: String, default: [] }],
         courseId: { type: String, required: true }
     },
     {
