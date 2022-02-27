@@ -1,14 +1,15 @@
-import { Utente } from '@/db-types';
+import { Student, User } from '@/types';
 import { AxiosContainer, BaseController } from '@/utils/baseController';
 
-export interface AuthLoginBody {
-    username: string;
-    password: string;
-}
-export interface AuthLoginResponse {
+export type LoginUserResult = {
     token: string;
-    user: Pick<Utente, 'uid' | 'nomeUtente' | 'email' | 'ruolo' | 'dataCreazione'>;
-}
+    user: Omit<User, 'password'>;
+};
+
+export type LoginStudentResult = {
+    token: string;
+    user: Student;
+};
 
 export class AuthController extends BaseController {
     public route = '/auth';
@@ -17,8 +18,25 @@ export class AuthController extends BaseController {
         super(axiosContainer);
     }
 
-    public async login(body: AuthLoginBody, options: Record<string, any> = {}): Promise<AuthLoginResponse> {
-        const result = await this.axiosInstance.post(`${this.route}/login`, body, { ...options });
+    public async loginUser(
+        username: string,
+        password: string,
+        options: Record<string, any> = {}
+    ): Promise<LoginUserResult> {
+        const result = await this.axiosInstance.post(`${this.route}`, { username, password }, { ...options });
+        return result.data;
+    }
+
+    public async loginStudent(
+        accessToken: string,
+        studentId: string,
+        options: Record<string, any> = {}
+    ): Promise<LoginStudentResult> {
+        const result = await this.axiosInstance.post(
+            `${this.route}`,
+            { studentId },
+            { ...options, headers: { authorization: `Bearer ${accessToken}` } }
+        );
         return result.data;
     }
 }

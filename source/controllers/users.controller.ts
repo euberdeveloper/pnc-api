@@ -25,7 +25,7 @@ export class UsersController extends BaseController {
     }
 
     public getMe(req: Request, res: Response): void {
-        const user = this.requireUser(req);
+        const user = this.requireGenericUser(req);
         res.json(user);
     }
 

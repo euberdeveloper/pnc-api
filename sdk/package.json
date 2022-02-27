@@ -1,6 +1,6 @@
 {
   "name": "operatn-api-client",
-  "version": "0.19.7",
+  "version": "0.0.1",
   "description": "The api client for operatn",
   "main": "bundled/index.js",
   "types": "bundled/index.d.ts",
