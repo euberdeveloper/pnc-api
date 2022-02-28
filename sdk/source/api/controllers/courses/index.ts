@@ -5,18 +5,18 @@ import { GroupsController } from './groups';
 export class CoursesController extends BaseController {
     public route = '/courses';
 
-    private readonly coursesCache: Map<number, GroupsController> = new Map();
+    private readonly groupsCache: Map<number, GroupsController> = new Map();
 
     constructor(axiosContainer: AxiosContainer) {
         super(axiosContainer);
     }
 
-    public courses(id: number): GroupsController {
-        if (!this.coursesCache.has(id)) {
+    public groups(id: number): GroupsController {
+        if (!this.groupsCache.has(id)) {
             const coursesController = new GroupsController(this.axiosContainer, `${this.route}/${id}`);
-            this.coursesCache.set(id, coursesController);
+            this.groupsCache.set(id, coursesController);
         }
-        return this.coursesCache.get(id) as GroupsController;
+        return this.groupsCache.get(id) as GroupsController;
     }
 
     public async getAll(options: Record<string, any> = {}): Promise<Course[]> {
