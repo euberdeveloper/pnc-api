@@ -23,4 +23,9 @@ export class CoursesController extends BaseController {
         const result = await this.axiosInstance.get<Course[]>(`${this.route}`, { ...options });
         return result.data;
     }
+
+    public async get(id: string, options: Record<string, any> = {}): Promise<Course> {
+        const result = await this.axiosInstance.get<Course>(`${this.route}/${id}`, { ...options });
+        return result.data;
+    }
 }
