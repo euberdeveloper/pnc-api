@@ -20,7 +20,7 @@ export class CoursesController extends BaseController {
     }
 
     public async getAll(options: Record<string, any> = {}): Promise<Course[]> {
-        const result = await this.axiosInstance.get(`${this.route}`, { ...options });
+        const result = await this.axiosInstance.get<Course[]>(`${this.route}`, { ...options });
         return result.data;
     }
 }
