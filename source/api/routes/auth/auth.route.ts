@@ -8,6 +8,7 @@ export default function (): Router {
     const router = Router();
 
     router.post('/login/user', authenticateLocal, asyncHandler(authController.loginUser.bind(authController)));
+
     router.post(
         '/login/student',
         authenticateLearnWorlds,
