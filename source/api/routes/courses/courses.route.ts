@@ -18,6 +18,12 @@ export default function (): Router {
         asyncHandler(coursesController.getAll.bind(coursesController))
     );
 
+    router.get(
+        '/:id',
+        permission([UserRole.ADMIN, UserRole.TEACHER]),
+        asyncHandler(coursesController.getById.bind(coursesController))
+    );
+
     router.use('/:courseId/groups', groupsRoute());
 
     return router;
