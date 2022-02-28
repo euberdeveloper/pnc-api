@@ -19,7 +19,7 @@ export class CoursesController extends BaseController {
         return this.coursesCache.get(id) as GroupsController;
     }
 
-    public async getAll(options: Record<string, any> = {}): Promise<Course> {
+    public async getAll(options: Record<string, any> = {}): Promise<Course[]> {
         const result = await this.axiosInstance.get(`${this.route}`, { ...options });
         return result.data;
     }

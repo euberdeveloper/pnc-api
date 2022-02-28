@@ -1,6 +1,6 @@
 {
   "name": "pnc-sdk",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "The api client for operatn",
   "main": "bundled/index.js",
   "types": "bundled/index.d.ts",
