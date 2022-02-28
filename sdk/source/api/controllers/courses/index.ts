@@ -5,13 +5,13 @@ import { GroupsController } from './groups';
 export class CoursesController extends BaseController {
     public route = '/courses';
 
-    private readonly groupsCache: Map<number, GroupsController> = new Map();
+    private readonly groupsCache: Map<string, GroupsController> = new Map();
 
     constructor(axiosContainer: AxiosContainer) {
         super(axiosContainer);
     }
 
-    public groups(id: number): GroupsController {
+    public groups(id: string): GroupsController {
         if (!this.groupsCache.has(id)) {
             const coursesController = new GroupsController(this.axiosContainer, `${this.route}/${id}`);
             this.groupsCache.set(id, coursesController);
