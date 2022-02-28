@@ -38,7 +38,7 @@ export class UserService {
     }
 
     public async deleteById(authorizingUser: User, id: string): Promise<void> {
-        if (authorizingUser.role !== UserRole.ADMIN || authorizingUser.id !== id) {
+        if (authorizingUser.role !== UserRole.ADMIN && authorizingUser.id !== id) {
             throw new UserNotAuthorizedError('A non-admin user is authorized just to delete himself');
         }
 
@@ -46,7 +46,7 @@ export class UserService {
     }
 
     public async deleteByUsername(authorizingUser: User, username: string): Promise<void> {
-        if (authorizingUser.role !== UserRole.ADMIN || authorizingUser.username !== username) {
+        if (authorizingUser.role !== UserRole.ADMIN && authorizingUser.username !== username) {
             throw new UserNotAuthorizedError('A non-admin user is authorized just to delete himself');
         }
 
