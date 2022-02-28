@@ -11,8 +11,10 @@ const schema = new Schema<User>(
     },
     {
         toJSON: {
+            virtuals: true,
+            versionKey: false,
             transform: (_doc, obj) => {
-                delete obj.__v;
+                delete obj.password;
                 return obj;
             }
         }

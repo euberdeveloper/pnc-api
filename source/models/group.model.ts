@@ -12,10 +12,8 @@ const schema = new Schema<Group>(
     },
     {
         toJSON: {
-            transform: (_doc, obj) => {
-                delete obj.__v;
-                return obj;
-            }
+            virtuals: true,
+            versionKey: false
         }
     }
 );
