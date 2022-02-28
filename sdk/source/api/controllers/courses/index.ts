@@ -2,6 +2,8 @@ import { Course } from '@/types';
 import { AxiosContainer, BaseController } from '@/utils/baseController';
 import { GroupsController } from './groups';
 
+export * from './groups';
+
 export class CoursesController extends BaseController {
     public route = '/courses';
 
