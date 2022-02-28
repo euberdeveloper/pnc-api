@@ -23,7 +23,11 @@ export class AuthController extends BaseController {
         password: string,
         options: Record<string, any> = {}
     ): Promise<LoginUserResult> {
-        const result = await this.axiosInstance.post(`${this.route}`, { username, password }, { ...options });
+        const result = await this.axiosInstance.post(
+            `${this.route}/login/user`,
+            { username, password },
+            { ...options }
+        );
         return result.data;
     }
 
@@ -33,7 +37,7 @@ export class AuthController extends BaseController {
         options: Record<string, any> = {}
     ): Promise<LoginStudentResult> {
         const result = await this.axiosInstance.post(
-            `${this.route}`,
+            `${this.route}/login/student`,
             { studentId },
             { ...options, headers: { authorization: `Bearer ${accessToken}` } }
         );
