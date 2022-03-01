@@ -14,10 +14,10 @@ export const authenticateJwt: Handler = function authenticate(req, res, next) {
         return next();
     }
 
-    passport.authenticate('jwt', function (_error, user, info) {
-        if (info) {
-            logger.warning('Error in jwt authentication', info);
-            const error = info instanceof ApiError ? info : new UserNotAuthenticatedError();
+    passport.authenticate('jwt', function (err, user, _info) {
+        if (err) {
+            logger.warning('Error in jwt authentication', err);
+            const error = err instanceof ApiError ? err : new UserNotAuthenticatedError();
             next(error);
         } else {
             req.login(user, err => {
