@@ -21,6 +21,16 @@ export class GroupService {
         }
     }
 
+    private async checkIfStudentAlreadyEnrolledInAGroupOfThisCourse(
+        courseId: string,
+        studentId: string
+    ): Promise<void> {
+        const alreadyEnrolled = await this.db.groupModel.exists({ courseId, partecipants: studentId }).countDocuments();
+        if (alreadyEnrolled) {
+            throw new InvalidBodyError('User is already enrolled in a group of this course');
+        }
+    }
+
     public async getAll(courseId: string): Promise<Group[]> {
         return this.db.groupModel.find({ courseId });
     }
@@ -58,6 +68,7 @@ export class GroupService {
             throw new InvalidBodyError('Group is full');
         }
 
+        await this.checkIfStudentAlreadyEnrolledInAGroupOfThisCourse(group.courseId, studentId);
         await this.checkIfStudentIsValidForCourse(group.courseId, studentId);
 
         group.partecipants.push(studentId);
