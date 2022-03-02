@@ -64,13 +64,14 @@ export class AuthService {
         return user;
     }
 
-    public async verifyUserWithJwt(jwtPayload: any): Promise<User> {
+    public async verifyUserWithJwt(jwtPayload: any): Promise<User | Student> {
         const id: string | null = jwtPayload?.sub;
+        const role: UserRole = jwtPayload?.role ?? UserRole.STUDENT;
         if (id === null) {
             logger.warning('Error in verifying user with jwt: subject is null');
             throw new InvalidCredentialsError('Invalid token: subject is null');
         }
-        const user = await this.findById(id);
+        const user = role === UserRole.STUDENT ? await this.learnWorlds.getStudent(id) : await this.findById(id);
         if (user === null) {
             logger.warning('Error in verifying user with jwt: user not found', id);
             throw new InvalidCredentialsError('Invalid token: user is not found');
