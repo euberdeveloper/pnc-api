@@ -30,4 +30,15 @@ export class CoursesController extends BaseController {
         const result = await this.axiosInstance.get<Course>(`${this.route}/${id}`, { ...options });
         return result.data;
     }
+
+    public async checkIfStudentEnrolled(
+        id: string,
+        studentId: string,
+        options: Record<string, any> = {}
+    ): Promise<boolean> {
+        const result = await this.axiosInstance.get<boolean>(`${this.route}/${id}/students/${studentId}/enrollment`, {
+            ...options
+        });
+        return result.data;
+    }
 }
