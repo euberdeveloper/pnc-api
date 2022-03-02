@@ -24,6 +24,11 @@ export default function (): Router {
         asyncHandler(coursesController.getById.bind(coursesController))
     );
 
+    router.get(
+        '/:id/students/:studentId/enrollment',
+        asyncHandler(coursesController.checkIfStudentIsEnrolled.bind(coursesController))
+    );
+
     router.use('/:courseId/groups', groupsRoute());
 
     return router;
