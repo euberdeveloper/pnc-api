@@ -10,11 +10,10 @@ async function main() {
         logger.info('Connecting to database...');
         await databaseConnection();
         logger.info('Start creating user');
-        const body: Omit<User, 'creationDate'> = {
-            id: '6218434466fb44e9f3adc1da',
-            username: 'admin',
-            email: 'euberdeveloper+xxx@gmail.com',
-            password: 'admin',
+        const body: Omit<User, 'id' | 'creationDate'> = {
+            username: 'euber',
+            email: 'euberdeveloper+pnc@gmail.com',
+            password: 'XXX',
             role: UserRole.ADMIN
         };
         logger.debug('User is: ', body);
