@@ -2,7 +2,7 @@ module.exports = {
     entryPoints: [
         './source/index.ts'
     ],
-    name: 'pnc-sdk',
+    name: '@prebenorwegian/sdk',
     excludeExternals: false,
     includeVersion: true,
     tsconfig: 'source/tsconfig.json',

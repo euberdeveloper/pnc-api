@@ -32,7 +32,7 @@ module.exports = {
     },
     plugins: [
         new DtsBundleWebpack({
-            name: 'pnc-sdk',
+            name: '@prebenorwegian/sdk',
             main: 'dist/index.d.ts',
             out: '../bundled/index.d.ts'
         })
@@ -41,7 +41,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, './bundled'),
         filename: 'index.js',
-        library: 'pnc-sdk',
+        library: '@prebenorwegian/sdk',
         libraryTarget: 'umd'
     }
 }
