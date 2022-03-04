@@ -1,13 +1,13 @@
-name: Publish Docker image for main
+name: Publish Docker image for dev
 
 on:
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   push_to_registry:
-    name: Push Docker image to Docker Hub for main
+    name: Push Docker image to Docker Hub for dev
     runs-on: ubuntu-latest
     steps:
       - name: Check out the repo
@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@98669ae865ea3cffbcbaa878cf57c20bbf1c6c38
         with:
-          images: prebenorwegian/pnc-api
+          images: prebenorwegian/pnc-api-dev
           tags: latest
       
       - name: Build and push Docker image
