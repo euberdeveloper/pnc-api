@@ -47,7 +47,7 @@ export class HooksController extends BaseController {
         super();
     }
 
-    public async userUnenrolled(req: Request, res: Response): Promise<void> {
+    public async userUnenrolledFromProduct(req: Request, res: Response): Promise<void> {
         const { token } = this.validateQueryParams<HookTokenQueryParams>(req, this.webhookUserUnenrolledBodyValidator);
         this.auth.checkWebHooksToken(token);
 
@@ -71,6 +71,6 @@ export class HooksController extends BaseController {
     }
 }
 
-export const groupsController = new HooksController({
+export const hooksController = new HooksController({
     learnworlds: CONFIG.LEARNWORLDS
 });
