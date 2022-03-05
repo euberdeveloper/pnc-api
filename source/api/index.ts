@@ -4,6 +4,7 @@ import { Router } from 'express';
 import authRoute from './routes/auth/auth.route';
 import coursesRoute from './routes/courses/courses.route';
 import usersRoute from './routes/users/users.route';
+import hooksRoute from './routes/hooks/hooks.route';
 import versionRouter from './routes/version/version.route';
 
 export default function (): Router {
@@ -17,6 +18,9 @@ export default function (): Router {
 
     logger.debug('/courses');
     router.use('/courses', coursesRoute());
+
+    logger.debug('/hooks');
+    router.use('/hooks', hooksRoute());
 
     logger.debug('/version');
     router.use('/version', versionRouter());

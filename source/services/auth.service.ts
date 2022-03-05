@@ -126,6 +126,13 @@ export class AuthService {
         return await bcrypt.hash(password, this.options.saltRounds);
     }
 
+    public checkWebHooksToken(token: string): void {
+        if (token !== this.options.pncApi.WEBHOOKS_TOKEN) {
+            logger.warning('Error in checking webhooks token: invalid token');
+            throw new InvalidCredentialsError('Invalid access token');
+        }
+    }
+
     public serializeUser(user: User | Student): SerializedUser {
         return { id: user.id, role: user.role };
     }

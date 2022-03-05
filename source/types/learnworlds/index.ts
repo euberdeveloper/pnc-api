@@ -1,2 +1,3 @@
 export * from './course';
-export * from './stundent';
+export * from './student';
+export * from './webooks';

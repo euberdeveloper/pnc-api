@@ -53,7 +53,8 @@ const CONFIG = {
             ISSUER: process.env.SECURITY_JWT_ISSUER
         },
         PNC_API: {
-            TOKEN: process.env.SECURITY_PNC_API_TOKEN
+            TOKEN: process.env.SECURITY_PNC_API_TOKEN,
+            WEBHOOKS_TOKEN: process.env.SECURITY_PNC_API_WEBHOOKS_TOKEN
         }
     },
     LEARNWORLDS: {

@@ -47,7 +47,7 @@ export class UsersController extends BaseController {
     }
 
     public async create(req: Request, res: Response): Promise<void> {
-        const body = this.validatePostBody<User>(req, this.bodyValidator);
+        const body = this.validateBody<User>(req, this.bodyValidator);
         const id = await this.users.create(body);
         res.json(id);
     }

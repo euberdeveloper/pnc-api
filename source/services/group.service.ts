@@ -86,6 +86,16 @@ export class GroupService {
         await group.save();
     }
 
+    public async removePartecipantByCourse(courseId: string, userId: string): Promise<void> {
+        const groups = await this.db.groupModel.find({ courseId });
+        const group = groups.find(group => group.partecipants.includes(userId));
+
+        if (group) {
+            group.partecipants = group.partecipants.filter(partecipant => partecipant !== userId);
+            await group.save();
+        }
+    }
+
     public async deleteById(id: string): Promise<void> {
         await this.db.groupModel.findByIdAndDelete(id);
     }
