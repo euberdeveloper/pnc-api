@@ -48,7 +48,7 @@ export class HooksController extends BaseController {
     }
 
     public async userUnenrolledFromProduct(req: Request, res: Response): Promise<void> {
-        const { token } = this.validateQueryParams<HookTokenQueryParams>(req, this.webhookUserUnenrolledBodyValidator);
+        const { token } = this.validateQueryParams<HookTokenQueryParams>(req, this.webhookTokenQueryParamsValidator);
         this.auth.checkWebHooksToken(token);
 
         const body = this.validateBody<UserUnenrolledWebHook>(req, this.webhookBaseBodyValidator);
