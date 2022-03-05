@@ -28,7 +28,8 @@ export class HooksController extends BaseController {
             type: Joi.string(),
             trigger: Joi.string(),
             // eslint-disable-next-line @typescript-eslint/naming-convention
-            school_id: Joi.string()
+            school_id: Joi.string(),
+            data: Joi.object()
         };
     }
     private get webhookUserUnenrolledBodyValidator() {
