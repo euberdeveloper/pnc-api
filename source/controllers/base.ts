@@ -2,7 +2,7 @@ import { Request } from 'express';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 import Joi = require('joi');
 
-import { InvalidBodyError, InvalidPathParamError, UserNotAuthenticatedError } from '@/errors';
+import { InvalidBodyError, InvalidPathParamError, InvalidQueryParamError, UserNotAuthenticatedError } from '@/errors';
 import { Student, User, UserRole } from '@/types';
 
 export interface IdPathParams {
@@ -51,6 +51,28 @@ export class BaseController {
         return params as T;
     }
 
+    private extractQueryParam(req: Request, param: string): string | undefined {
+        const queryParam = req.query[param] as undefined | string | string[];
+
+        if (Array.isArray(queryParam)) {
+            return queryParam.length ? queryParam[queryParam.length - 1] : undefined;
+        } else if (queryParam === undefined) {
+            return param in req.query ? '' : undefined;
+        }
+
+        return queryParam;
+    }
+
+    private getQueryParamsObject<T>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+        const params: any = {};
+
+        for (const queryParam in paramsSchema) {
+            params[queryParam] = this.extractQueryParam(req, queryParam);
+        }
+
+        return params as T;
+    }
+
     protected validatePathParams<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
         const paramsObject = this.getPathParamsObject<T>(req, paramsSchema);
 
@@ -66,11 +88,25 @@ export class BaseController {
         return value as T;
     }
 
+    protected validateQueryParams<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+        const paramsObject = this.getQueryParamsObject<T>(req, paramsSchema);
+
+        const { error, value } = Joi.object(paramsSchema).validate(paramsObject, {
+            convert: true
+        });
+
+        if (error) {
+            throw new InvalidQueryParamError(error.message);
+        }
+
+        return value as T;
+    }
+
     protected validateIdPathParams(req: Request): IdPathParams {
         return this.validatePathParams<IdPathParams>(req, this.idPathParamsValidator);
     }
 
-    protected validatePostBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+    protected validateBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
         const { error, value } = Joi.object(paramsSchema).validate(req.body, { presence: 'required' });
 
         if (error) {
