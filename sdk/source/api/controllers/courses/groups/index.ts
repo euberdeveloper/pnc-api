@@ -7,6 +7,12 @@ export type GroupsCreateBody = {
     maxPartecipants: number;
 };
 
+export type GroupsUpdateBody = {
+    name: string;
+    description: string;
+    maxPartecipants: number;
+};
+
 export class GroupsController extends BaseController {
     get route(): string {
         return `${this.baseUrl}/groups`;
@@ -29,6 +35,10 @@ export class GroupsController extends BaseController {
     public async create(body: GroupsCreateBody, options: Record<string, any> = {}): Promise<string> {
         const result = await this.axiosInstance.post<string>(`${this.route}`, body, { ...options });
         return result.data;
+    }
+
+    public async update(id: string, body: GroupsUpdateBody, options: Record<string, any> = {}): Promise<void> {
+        await this.axiosInstance.put(`${this.route}/${id}`, body, { ...options });
     }
 
     public async addPartecipant(id: string, studentId: string, options: Record<string, any> = {}): Promise<void> {
