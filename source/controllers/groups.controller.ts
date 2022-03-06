@@ -54,10 +54,17 @@ export class GroupsController extends BaseController {
 
     public async create(req: Request, res: Response): Promise<void> {
         const { courseId } = this.validatePathParams<GroupBasePathParams>(req, this.groupBaseIdPathParamsValidator);
-        const requestBody = this.validateBody<Group>(req, this.bodyValidator);
+        const requestBody = this.validatePostBody<Group>(req, this.bodyValidator);
         const body = { ...requestBody, courseId };
         const id = await this.groups.create(courseId, body);
         res.json(id);
+    }
+
+    public async update(req: Request, res: Response): Promise<void> {
+        const { id, courseId } = this.validatePathParams<GroupIdPathParams>(req, this.groupIdPathParamsValidator);
+        const body = this.validatePutBody<Group>(req, this.bodyValidator);
+        await this.groups.update(id, courseId, body);
+        res.json();
     }
 
     public async addPartecipant(req: Request, res: Response): Promise<void> {

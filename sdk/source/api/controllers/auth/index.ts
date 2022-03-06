@@ -1,4 +1,4 @@
-import { Student, User } from '@/types';
+import { Student, SwapDatesWithStrings, User } from '@/types';
 import { AxiosContainer, BaseController } from '@/utils/baseController';
 
 export type LoginUserResult = {
@@ -23,7 +23,7 @@ export class AuthController extends BaseController {
         password: string,
         options: Record<string, any> = {}
     ): Promise<LoginUserResult> {
-        const result = await this.axiosInstance.post(
+        const result = await this.axiosInstance.post<SwapDatesWithStrings<LoginUserResult>>(
             `${this.route}/login/user`,
             { username, password },
             { ...options }
@@ -36,7 +36,7 @@ export class AuthController extends BaseController {
         studentId: string,
         options: Record<string, any> = {}
     ): Promise<LoginStudentResult> {
-        const result = await this.axiosInstance.post(
+        const result = await this.axiosInstance.post<SwapDatesWithStrings<LoginStudentResult>>(
             `${this.route}/login/student`,
             { studentId },
             { ...options, headers: { authorization: `Bearer ${accessToken}` } }
