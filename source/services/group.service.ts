@@ -53,6 +53,28 @@ export class GroupService {
         return group.id;
     }
 
+    public async update(
+        id: string,
+        courseId: string,
+        body: Omit<Group, 'id' | 'partecipants' | 'creationDate'>
+    ): Promise<void> {
+        const group = await this.db.groupModel.findOne({ courseId, id });
+
+        if (!group) {
+            throw new NotFoundError('Group not found');
+        }
+
+        if (group.partecipants.length > body.maxPartecipants) {
+            throw new InvalidBodyError('With specified number of partecipants, the group would become full');
+        }
+
+        group.name = body.name;
+        group.description = body.description;
+        group.maxPartecipants = body.maxPartecipants;
+
+        await group.save();
+    }
+
     public async addPartecipant(groupId: string, studentId: string): Promise<void> {
         const group = await this.db.groupModel.findById(groupId);
 

@@ -73,6 +73,20 @@ export class BaseController {
         return params as T;
     }
 
+    private validateBody<T = any>(
+        req: Request,
+        paramsSchema: Record<string, Joi.Schema<T>>,
+        validationOptions: Joi.ValidationOptions
+    ): T {
+        const { error, value } = Joi.object(paramsSchema).validate(req.body, validationOptions);
+
+        if (error) {
+            throw new InvalidBodyError(error.message);
+        }
+
+        return value as T;
+    }
+
     protected validatePathParams<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
         const paramsObject = this.getPathParamsObject<T>(req, paramsSchema);
 
@@ -106,14 +120,16 @@ export class BaseController {
         return this.validatePathParams<IdPathParams>(req, this.idPathParamsValidator);
     }
 
-    protected validateBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
-        const { error, value } = Joi.object(paramsSchema).validate(req.body, { presence: 'required' });
+    protected validatePostBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+        return this.validateBody(req, paramsSchema, { presence: 'required' });
+    }
 
-        if (error) {
-            throw new InvalidBodyError(error.message);
-        }
+    protected validatePutBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+        return this.validateBody(req, paramsSchema, { presence: 'required' });
+    }
 
-        return value as T;
+    protected validatePatchBody<T = any>(req: Request, paramsSchema: Record<string, Joi.Schema<T>>): T {
+        return this.validateBody(req, paramsSchema, { presence: 'optional' });
     }
 
     protected requireGenericUser(req: Request): User | Student {

@@ -4,7 +4,7 @@ import Joi = require('joi');
 
 import { authService, groupService, learnWorldsService } from '@/services';
 import { UserUnenrolledWebHook } from '@/types';
-import { BadRequestError, InvalidCredentialsError } from '@/errors';
+import { InvalidCredentialsError } from '@/errors';
 
 import CONFIG from '@/config';
 
@@ -52,7 +52,7 @@ export class HooksController extends BaseController {
         const { token } = this.validateQueryParams<HookTokenQueryParams>(req, this.webhookTokenQueryParamsValidator);
         this.auth.checkWebHooksToken(token);
 
-        const body = this.validateBody<UserUnenrolledWebHook>(req, this.webhookUserUnenrolledBodyValidator);
+        const body = this.validatePostBody<UserUnenrolledWebHook>(req, this.webhookUserUnenrolledBodyValidator);
 
         if (body.school_id !== this.config.learnworlds.SCHOOL_ID) {
             throw new InvalidCredentialsError('Invalid shool id');

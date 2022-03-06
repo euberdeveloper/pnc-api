@@ -1,6 +1,6 @@
 {
   "name": "pnc-api",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "The REST Apis of Preben Norwegian Community software",
   "scripts": {
     "transpile:source": "tsc -p source",
