@@ -60,13 +60,7 @@ export class HooksController extends BaseController {
 
         const studentId = body.data.user.id;
         const courseId = body.data.product.id;
-        const studentActuallyStillEnrolled = await this.learnWorlds.checkIfStudentHasCourse(courseId, studentId);
-
-        if (studentActuallyStillEnrolled) {
-            throw new BadRequestError('The student is actually still enrolled or the course is not found');
-        } else {
-            await this.groups.removePartecipantByCourse(courseId, studentId);
-        }
+        await this.groups.removePartecipantByCourse(courseId, studentId);
 
         res.json();
     }
