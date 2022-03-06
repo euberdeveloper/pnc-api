@@ -1,6 +1,6 @@
 {
   "name": "@prebenorwegian/sdk",
-  "version": "0.6.1",
+  "version": "0.7.0",
   "description": "The api client for Preben Norwegian Community",
   "main": "bundled/index.js",
   "types": "bundled/index.d.ts",
