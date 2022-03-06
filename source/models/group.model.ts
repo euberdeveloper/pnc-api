@@ -8,6 +8,13 @@ const schema = new Schema<Group>(
         maxPartecipants: { type: Number, required: true },
         creationDate: { type: Date, default: new Date() },
         partecipants: [{ type: String, default: [] }],
+        lecturePeriod: {
+            type: {
+                start: { type: Date, required: true },
+                end: { type: Date, required: true }
+            },
+            required: true
+        },
         courseId: { type: String, required: true }
     },
     {

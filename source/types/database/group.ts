@@ -5,5 +5,6 @@ export interface Group {
     maxPartecipants: number;
     courseId: string;
     partecipants: string[];
+    lecturePeriod: { start: Date; end: Date };
     creationDate: Date;
 }

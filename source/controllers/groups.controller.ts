@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import Joi = require('joi');
 
 import { groupService } from '@/services';
-import { Group } from '@/types';
+import { DeepPartial, Group } from '@/types';
 
 import { BaseController } from './base';
 
@@ -33,7 +33,11 @@ export class GroupsController extends BaseController {
     private readonly bodyValidator = {
         name: Joi.string().min(1).max(1000),
         description: Joi.string().min(1).max(50_000),
-        maxPartecipants: Joi.number().min(1)
+        maxPartecipants: Joi.number().min(1),
+        lecturePeriod: Joi.object({
+            start: Joi.date().required(),
+            end: Joi.date().greater(Joi.ref('start')).required()
+        })
     };
 
     constructor(private readonly groups = groupService) {
@@ -62,7 +66,7 @@ export class GroupsController extends BaseController {
 
     public async update(req: Request, res: Response): Promise<void> {
         const { id, courseId } = this.validatePathParams<GroupIdPathParams>(req, this.groupIdPathParamsValidator);
-        const body = this.validatePutBody<Group>(req, this.bodyValidator);
+        const body = this.validatePatchBody<DeepPartial<Group>>(req, this.bodyValidator);
         await this.groups.update(id, courseId, body);
         res.json();
     }
