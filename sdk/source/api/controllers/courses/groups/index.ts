@@ -6,7 +6,7 @@ export type GroupsCreateBody = Pick<
     'name' | 'description' | 'maxPartecipants' | 'lecturePeriod' | 'weekSchedule'
 >;
 export type GroupsUpdateBody = DeepPartial<GroupsCreateBody> &
-    Pick<Partial<Group>, 'lecturePeriod'> & { weekSchedule: Partial<WeekSchedule> };
+    Pick<Partial<Group>, 'lecturePeriod'> & { weekSchedule?: Partial<WeekSchedule> };
 
 export class GroupsController extends BaseController {
     get route(): string {
