@@ -52,7 +52,7 @@ export class HooksController extends BaseController {
         const { token } = this.validateQueryParams<HookTokenQueryParams>(req, this.webhookTokenQueryParamsValidator);
         this.auth.checkWebHooksToken(token);
 
-        const body = this.validateBody<UserUnenrolledWebHook>(req, this.webhookBaseBodyValidator);
+        const body = this.validateBody<UserUnenrolledWebHook>(req, this.webhookUserUnenrolledBodyValidator);
 
         if (body.school_id !== this.config.learnworlds.SCHOOL_ID) {
             throw new InvalidCredentialsError('Invalid shool id');
