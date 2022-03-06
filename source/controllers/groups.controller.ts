@@ -37,6 +37,36 @@ export class GroupsController extends BaseController {
         lecturePeriod: Joi.object({
             start: Joi.date().required(),
             end: Joi.date().greater(Joi.ref('start')).required()
+        }),
+        weekSchedule: Joi.object({
+            monday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            tuesday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            wednesday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            thursday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            friday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            saturday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            sunday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null)
         })
     };
 

@@ -15,6 +15,39 @@ const schema = new Schema<Group>(
             },
             required: true
         },
+        weekSchedule: {
+            type: {
+                monday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                },
+                tuesday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                },
+                wednesday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                },
+                thursday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                },
+                friday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                },
+                saturday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                },
+                sunday: {
+                    type: { from: { type: String, required: true }, to: { type: String, required: true } },
+                    required: false
+                }
+            },
+            required: true
+        },
         courseId: { type: String, required: true }
     },
     {
