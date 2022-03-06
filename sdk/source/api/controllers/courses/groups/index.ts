@@ -1,11 +1,13 @@
-import { DeepPartial, Group, SwapDatesWithStrings } from '@/types';
+import { DeepPartial, Group, SwapDatesWithStrings, WeekSchedule } from '@/types';
 import { AxiosContainer, BaseController } from '@/utils/baseController';
 
 export type GroupsCreateBody = Pick<
     Group,
     'name' | 'description' | 'maxPartecipants' | 'lecturePeriod' | 'weekSchedule'
 >;
-export type GroupsUpdateBody = DeepPartial<GroupsCreateBody> & Pick<Partial<Group>, 'lecturePeriod'>;
+export type GroupsUpdateBody = DeepPartial<GroupsCreateBody> &
+    Pick<Partial<Group>, 'lecturePeriod'> &
+    Partial<WeekSchedule>;
 
 export class GroupsController extends BaseController {
     get route(): string {
