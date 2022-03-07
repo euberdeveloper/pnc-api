@@ -63,12 +63,29 @@ export class LearnWorldsService {
     public async getCourse(id: string): Promise<Course | null> {
         try {
             const response = await axios.get(`${this.host}/v2/courses/${id}`, { headers: await this.getHeaders() });
-            return { ...response.data, role: UserRole.STUDENT };
+            return response.data;
         } catch (error) {
             const err = error as AxiosError;
 
             if (err.response?.status === 404) {
                 return null;
+            } else {
+                throw error;
+            }
+        }
+    }
+
+    public async getCourseStudents(id: string): Promise<Student[] | null> {
+        try {
+            const response = await axios.get(`${this.host}/v2/courses/${id}/users`, {
+                headers: await this.getHeaders()
+            });
+            return response.data?.data;
+        } catch (error) {
+            const err = error as AxiosError;
+
+            if (err.response?.status === 404) {
+                return err.response.data?.error === 'Users not found' ? [] : null;
             } else {
                 throw error;
             }
