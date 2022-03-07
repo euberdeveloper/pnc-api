@@ -1,6 +1,6 @@
 import { databaseService, learnWorldsService } from '@/services';
 import { CourseDoesNotExistError, InvalidBodyError, NotFoundError } from '@/errors';
-import { Group } from '@/types';
+import { DeepPartial, Group } from '@/types';
 
 export class GroupService {
     constructor(private readonly db = databaseService, private readonly learnWorlds = learnWorldsService) {}
@@ -56,7 +56,7 @@ export class GroupService {
     public async update(
         id: string,
         courseId: string,
-        body: Omit<Group, 'id' | 'partecipants' | 'creationDate'>
+        body: DeepPartial<Omit<Group, 'id' | 'partecipants' | 'creationDate'>>
     ): Promise<void> {
         const group = await this.db.groupModel.findOne({ courseId, id });
 
@@ -64,15 +64,11 @@ export class GroupService {
             throw new NotFoundError('Group not found');
         }
 
-        if (group.partecipants.length > body.maxPartecipants) {
+        if (body.maxPartecipants !== undefined && group.partecipants.length > body.maxPartecipants) {
             throw new InvalidBodyError('With specified number of partecipants, the group would become full');
         }
 
-        group.name = body.name;
-        group.description = body.description;
-        group.maxPartecipants = body.maxPartecipants;
-
-        await group.save();
+        await this.db.groupModel.updateOne({ courseId, id }, { $set: body });
     }
 
     public async addPartecipant(groupId: string, studentId: string): Promise<void> {

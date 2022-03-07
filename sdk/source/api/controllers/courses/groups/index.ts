@@ -1,17 +1,12 @@
-import { Group, SwapDatesWithStrings } from '@/types';
+import { DeepPartial, Group, SwapDatesWithStrings, WeekSchedule } from '@/types';
 import { AxiosContainer, BaseController } from '@/utils/baseController';
 
-export type GroupsCreateBody = {
-    name: string;
-    description: string;
-    maxPartecipants: number;
-};
-
-export type GroupsUpdateBody = {
-    name: string;
-    description: string;
-    maxPartecipants: number;
-};
+export type GroupsCreateBody = Pick<
+    Group,
+    'name' | 'description' | 'maxPartecipants' | 'lecturePeriod' | 'weekSchedule'
+>;
+export type GroupsUpdateBody = DeepPartial<GroupsCreateBody> &
+    Pick<Partial<Group>, 'lecturePeriod'> & { weekSchedule?: Partial<WeekSchedule> };
 
 export class GroupsController extends BaseController {
     get route(): string {
@@ -23,9 +18,14 @@ export class GroupsController extends BaseController {
     }
 
     private parseGroup(group: SwapDatesWithStrings<Group>): Group {
+        group.creationDate;
         return {
             ...group,
-            creationDate: new Date(group.creationDate)
+            creationDate: new Date(group.creationDate),
+            lecturePeriod: {
+                start: new Date(group.lecturePeriod.start),
+                end: new Date(group.lecturePeriod.end)
+            }
         };
     }
 
@@ -45,7 +45,7 @@ export class GroupsController extends BaseController {
     }
 
     public async update(id: string, body: GroupsUpdateBody, options: Record<string, any> = {}): Promise<void> {
-        await this.axiosInstance.put(`${this.route}/${id}`, body, { ...options });
+        await this.axiosInstance.patch(`${this.route}/${id}`, body, { ...options });
     }
 
     public async addPartecipant(id: string, studentId: string, options: Record<string, any> = {}): Promise<void> {

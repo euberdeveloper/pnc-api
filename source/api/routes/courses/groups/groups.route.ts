@@ -16,7 +16,7 @@ export default function (): Router {
 
     router.post('/', permission([UserRole.ADMIN]), asyncHandler(groupsController.create.bind(groupsController)));
 
-    router.put('/:id', permission([UserRole.ADMIN]), asyncHandler(groupsController.update.bind(groupsController)));
+    router.patch('/:id', permission([UserRole.ADMIN]), asyncHandler(groupsController.update.bind(groupsController)));
 
     router.put(
         '/:id/partecipants/:studentId',
