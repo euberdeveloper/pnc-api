@@ -42,6 +42,17 @@ export class CoursesController extends BaseController {
         res.json(course);
     }
 
+    public async getCourseStudents(req: Request, res: Response): Promise<void> {
+        const { id } = this.validatePathParams<CourseIdPathParams>(req, this.courseBaseIdPathParamsValidator);
+
+        const students = await this.learnWorlds.getCourseStudents(id);
+        if (students === null) {
+            throw new NotFoundError(`Course with id ${id} not found`);
+        }
+
+        res.json(students);
+    }
+
     public async checkIfStudentIsEnrolled(req: Request, res: Response): Promise<void> {
         const { id, studentId } = this.validatePathParams<CourseCheckEnrollmentPathParams>(
             req,
