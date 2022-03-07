@@ -63,7 +63,7 @@ export class LearnWorldsService {
     public async getCourse(id: string): Promise<Course | null> {
         try {
             const response = await axios.get(`${this.host}/v2/courses/${id}`, { headers: await this.getHeaders() });
-            return { ...response.data, role: UserRole.STUDENT };
+            return response.data;
         } catch (error) {
             const err = error as AxiosError;
 
