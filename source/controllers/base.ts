@@ -26,7 +26,7 @@ export class BaseController {
     protected emailValidatorObject = Joi.string().email();
     protected roleValidatorObject = Joi.string().valid(...Object.values(UserRole));
     protected learnWorldsIdValidatorObject = Joi.string().min(1).max(1000).required();
-    protected timeValidatorObject = Joi.string().regex(/^(\d{2}):(\d{2})$/);
+    protected timeValidatorObject = Joi.string().regex(/^([01]\d|2[0-3]):([0-5]\d)$/);
 
     protected idPathParamsValidator = {
         id: this.idValidatorObject
