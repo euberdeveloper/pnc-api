@@ -1,4 +1,4 @@
-import { Course } from '@/types';
+import { Course, Student } from '@/types';
 import { AxiosContainer, BaseController } from '@/utils/baseController';
 import { GroupsController } from './groups';
 
@@ -28,6 +28,11 @@ export class CoursesController extends BaseController {
 
     public async get(id: string, options: Record<string, any> = {}): Promise<Course> {
         const result = await this.axiosInstance.get<Course>(`${this.route}/${id}`, { ...options });
+        return result.data;
+    }
+
+    public async getStudents(id: string, options: Record<string, any> = {}): Promise<Student[]> {
+        const result = await this.axiosInstance.get<Student[]>(`${this.route}/${id}/students`, { ...options });
         return result.data;
     }
 
