@@ -1,8 +1,8 @@
 export interface Course {
     id: string;
     title: string;
-    description: string;
-    courseImage: string;
+    description: string | null;
+    courseImage: string | null;
     access: string;
-    final_price: number;
+    finalPrice: number;
 }

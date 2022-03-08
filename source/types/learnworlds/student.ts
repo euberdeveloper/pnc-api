@@ -4,12 +4,9 @@ export interface Student {
     id: string;
     email: string;
     username: string;
-    is_admin: boolean;
-    is_instructor: boolean;
-    is_affiliate: boolean;
-    courseImage: string;
-    access: string;
-    final_price: number;
+    isAdmin: boolean;
+    isInstructor: boolean;
+    isAffiliate: boolean;
     role: UserRole;
 }
 
