@@ -15,6 +15,11 @@ interface LearnWorldsApiResponse {
     success: boolean;
 }
 
+interface InternalLearnWorldsToken {
+    accessToken: string;
+    expires: number;
+}
+
 export interface LearnWorldsToken {
     access_token: string;
     token_type: string;
@@ -23,6 +28,7 @@ export interface LearnWorldsToken {
 
 export class LearnWorldsService {
     private readonly host: string;
+    private token: InternalLearnWorldsToken | null = null;
 
     constructor(private readonly options: LearnWorldsServiceOptions) {
         this.host = this.options.learnworlds.API_ENDPOINT;
@@ -32,11 +38,11 @@ export class LearnWorldsService {
         const token = await this.getToken();
         return {
             'Lw-Client': this.options.learnworlds.CLIENT_ID,
-            'Authorization': `Bearer ${token.access_token}`
+            'Authorization': `Bearer ${token.accessToken}`
         };
     }
 
-    private async getToken(): Promise<LearnWorldsToken> {
+    private async getRawToken(): Promise<LearnWorldsToken> {
         const response = await axios.post<LearnWorldsApiResponse>(
             `${this.host}/oauth2/access_token`,
             {
@@ -53,6 +59,16 @@ export class LearnWorldsService {
         }
 
         return response.data.tokenData;
+    }
+
+    private async getToken(): Promise<InternalLearnWorldsToken> {
+        const expiringSecurityMargin = 5000;
+        if (this.token === null || this.token.expires < Date.now() - expiringSecurityMargin) {
+            const rawToken = await this.getRawToken();
+            this.token = { accessToken: rawToken.access_token, expires: Date.now() + rawToken.expires_in * 1000 };
+        }
+
+        return this.token;
     }
 
     public async getCourses(): Promise<Course[]> {
