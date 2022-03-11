@@ -1,3 +1,5 @@
+# 301 - Transferred to the [official organization](https://github.com/Preben-Norwegian-Community)
+
 # pnc-api
 The REST Apis of the Preben Norwegian Community software
 
