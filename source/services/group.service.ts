@@ -1,6 +1,6 @@
 import { databaseService, learnWorldsService } from '@/services';
 import { CourseDoesNotExistError, InvalidBodyError, NotFoundError } from '@/errors';
-import { Group } from '@/types';
+import { DeepPartial, Group } from '@/types';
 
 export class GroupService {
     constructor(private readonly db = databaseService, private readonly learnWorlds = learnWorldsService) {}
@@ -53,6 +53,24 @@ export class GroupService {
         return group.id;
     }
 
+    public async update(
+        id: string,
+        courseId: string,
+        body: DeepPartial<Omit<Group, 'id' | 'partecipants' | 'creationDate'>>
+    ): Promise<void> {
+        const group = await this.db.groupModel.findOne({ courseId, id });
+
+        if (!group) {
+            throw new NotFoundError('Group not found');
+        }
+
+        if (body.maxPartecipants !== undefined && group.partecipants.length > body.maxPartecipants) {
+            throw new InvalidBodyError('With specified number of partecipants, the group would become full');
+        }
+
+        await this.db.groupModel.updateOne({ courseId, id }, { $set: body });
+    }
+
     public async addPartecipant(groupId: string, studentId: string): Promise<void> {
         const group = await this.db.groupModel.findById(groupId);
 
@@ -84,6 +102,16 @@ export class GroupService {
 
         group.partecipants = group.partecipants.filter(partecipant => partecipant !== userId);
         await group.save();
+    }
+
+    public async removePartecipantByCourse(courseId: string, userId: string): Promise<void> {
+        const groups = await this.db.groupModel.find({ courseId });
+        const group = groups.find(group => group.partecipants.includes(userId));
+
+        if (group) {
+            group.partecipants = group.partecipants.filter(partecipant => partecipant !== userId);
+            await group.save();
+        }
     }
 
     public async deleteById(id: string): Promise<void> {

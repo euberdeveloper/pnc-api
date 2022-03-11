@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import Joi = require('joi');
 
 import { groupService } from '@/services';
-import { Group } from '@/types';
+import { DeepPartial, Group } from '@/types';
 
 import { BaseController } from './base';
 
@@ -33,7 +33,41 @@ export class GroupsController extends BaseController {
     private readonly bodyValidator = {
         name: Joi.string().min(1).max(1000),
         description: Joi.string().min(1).max(50_000),
-        maxPartecipants: Joi.number().min(1)
+        maxPartecipants: Joi.number().min(1),
+        lecturePeriod: Joi.object({
+            start: Joi.date().required(),
+            end: Joi.date().greater(Joi.ref('start')).required()
+        }),
+        weekSchedule: Joi.object({
+            monday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            tuesday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            wednesday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            thursday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            friday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            saturday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null),
+            sunday: Joi.object({
+                from: this.timeValidatorObject.required(),
+                to: this.timeValidatorObject.required()
+            }).allow(null)
+        })
     };
 
     constructor(private readonly groups = groupService) {
@@ -58,6 +92,13 @@ export class GroupsController extends BaseController {
         const body = { ...requestBody, courseId };
         const id = await this.groups.create(courseId, body);
         res.json(id);
+    }
+
+    public async update(req: Request, res: Response): Promise<void> {
+        const { id, courseId } = this.validatePathParams<GroupIdPathParams>(req, this.groupIdPathParamsValidator);
+        const body = this.validatePatchBody<DeepPartial<Group>>(req, this.bodyValidator);
+        await this.groups.update(id, courseId, body);
+        res.json();
     }
 
     public async addPartecipant(req: Request, res: Response): Promise<void> {

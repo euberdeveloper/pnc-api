@@ -1,7 +1,7 @@
 const fse = require('fs-extra');
 const path = require('path');
 
-const TYPES_OUTPUT_PATH = path.join(__dirname, '..', 'source', 'types');
+const TYPES_OUTPUT_PATH = path.join(__dirname, '..', 'source', 'types', 'ported-types');
 const TYPES_INPUT_PATH = path.join(__dirname, '..', '..', 'source', 'types');
 
 const ERRORS_INPUT_PATH = path.join(__dirname, '..', '..', 'source', 'errors');
